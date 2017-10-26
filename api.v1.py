@@ -48,7 +48,7 @@ app.config['cpool'] = cpool
 @app.route('/ping')
 def ping():
 
-    """ get gestori """
+    """ PING """
 
     pipeline = [
         {
@@ -60,67 +60,7 @@ def ping():
     if out is not None:
         return 'pong'
 
-    return false
-
-
-
-@app.route('/gestori')
-def gestori():
-
-    """ get gestori """
-
-    pipeline = [
-        {
-            '$limit': 20
-        }
-    ]
-
-    regx = re.compile("^foo", re.IGNORECASE)
-    out = app.config['cpool']['collection_gestori'].find({'val': regx})
-
-    return jsonify(dumps(out))
-
-
-
-@app.route('/ilde', methods=['GET', 'POST'])
-def ilde():
-
-    """ get iledebeaute """
-
-    pipeline = [
-        {
-            '$limit': 20
-        }
-    ]
-
-    out = app.config['cpool']['collection_ilde_final'].aggregate(pipeline)
-
-    return jsonify(dumps(out))
-
-
-
-@app.route('/letu', methods=['GET', 'POST'])
-def letu():
-
-    """ get letoile """
-
-    pipeline = [
-        {
-            '$limit': 20
-        }
-    ]
-
-    out = app.config['cpool']['collection_letu_final'].aggregate(pipeline)
-    return jsonify(dumps(out))
-
-
-
-@app.route('/auth', methods=['GET', 'POST'])
-def auth():
-
-    """ get auth """
-
-    return render_template('api.v1.html', json=list(out))
+    return False
 
 
 
@@ -762,7 +702,7 @@ def ft():
     search = str(search.encode('utf8').strip())
 
     # set query string limit
-    if len(search) > 40 and len(search) < 4:
+    if len(search) > 40 or len(search) < 4:
         return jsonify([])
 
     if len(search) > 3:
