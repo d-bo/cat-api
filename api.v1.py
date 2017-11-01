@@ -45,6 +45,15 @@ app.config['cpool'] = cpool
 
 
 
+@app.after_request
+def add_no_cache(response):
+    if request.endpoint != "static":
+        response.headers["Cache-Control"] = "no-cache"
+        response.headers["Pragma"] = "no-cache"
+    return response
+
+
+
 @app.route('/ping')
 def ping():
 
@@ -702,10 +711,10 @@ def ft():
     search = str(search.encode('utf8').strip())
 
     # set query string limit
-    if len(search) > 40 or len(search) < 4:
+    if len(search) > 40 or len(search) < 2:
         return jsonify([])
 
-    if len(search) > 3:
+    if len(search) > 2:
         pipe = [
             {
                 '$match': {
@@ -736,4 +745,4 @@ def ft():
 if __name__ == "__main__":
     app.jinja_env.auto_reload = True
     app.config['TEMPLATES_AUTO_RELOAD'] = True
-    app.run(host='0.0.0.0')
+    app.run(host='0.0.0.0', threaded=True)
