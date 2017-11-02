@@ -556,7 +556,10 @@ def rive_products():
                         'image_url': '$image_url',
                         'country': '$country',
                         'id': '$id',
-                        'listingprice': '$listingprice'
+                        'listingprice': '$listingprice',
+                        'volume': '$volume',
+                        'volumefieldname': '$volumefieldname',
+                        'url': '$url'
                     }
                 }
             }
@@ -580,7 +583,10 @@ def rive_products():
                         'image_url': '$image_url',
                         'country': '$country',
                         'id': '$id',
-                        'listingprice': '$listingprice'
+                        'listingprice': '$listingprice',
+                        'volume': '$volume',
+                        'volumefieldname': '$volumefieldname',
+                        'url': '$url'
                     }
                 }
             }
@@ -609,7 +615,10 @@ def rive_products():
                         'image_url': '$image_url',
                         'country': '$country',
                         'id': '$id',
-                        'listingprice': '$listingprice'
+                        'listingprice': '$listingprice',
+                        'volume': '$volume',
+                        'volumefieldname': '$volumefieldname',
+                        'url': '$url'
                     }
                 }
             }
