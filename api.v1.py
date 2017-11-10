@@ -47,6 +47,9 @@ app.config['cpool'] = cpool
 
 @app.after_request
 def add_no_cache(response):
+
+    """Ignore cache"""
+
     if request.endpoint != "static":
         response.headers["Cache-Control"] = "no-cache"
         response.headers["Pragma"] = "no-cache"
@@ -724,7 +727,7 @@ def ft():
 
     # set query string limit
     if len(search) > 40 or len(search) < 2:
-        return jsonify({'count': 0, data: []})
+        return jsonify({'count': 0, 'data': []})
 
     if len(search) > 2:
         pipe = [
@@ -750,7 +753,7 @@ def ft():
             out = app.config['cpool']['collection_letu_final'].aggregate(pipe)
         return jsonify(dumps(out))
     else:
-        return jsonify({'count': 0, data: []})
+        return jsonify({'count': 0, 'data': []})
 
 
 
