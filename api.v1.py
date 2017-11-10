@@ -200,7 +200,7 @@ def gestori_products():
 
     # set query string limit
     if len(search) > 15:
-        return jsonify([])
+        return jsonify({'count': 0, 'data': []})
 
     total = app.config['cpool']['collection_gestori'].count()
     page = int(request.args.get('page'))
@@ -342,7 +342,8 @@ def letu_products():
                         'id': '$id',
                         'img': '$img',
                         'volume': '$volume',
-                        'listingprice': '$listingprice'
+                        'listingprice': '$listingprice',
+                        'url': '$url'
                     }
                 }
             }
@@ -365,12 +366,14 @@ def letu_products():
                         'id': '$id',
                         'img': '$img',
                         'volume': '$volume',
-                        'listingprice': '$listingprice'
+                        'listingprice': '$listingprice',
+                        'url': '$url'
                     }
                 }
             }
         ]
 
+    # autocomplete
     # in case of articul is not empty
     if articul is not None:
         pipe = [
@@ -721,7 +724,7 @@ def ft():
 
     # set query string limit
     if len(search) > 40 or len(search) < 2:
-        return jsonify([])
+        return jsonify({'count': 0, data: []})
 
     if len(search) > 2:
         pipe = [
@@ -747,7 +750,7 @@ def ft():
             out = app.config['cpool']['collection_letu_final'].aggregate(pipe)
         return jsonify(dumps(out))
     else:
-        return jsonify([])
+        return jsonify({'count': 0, data: []})
 
 
 
