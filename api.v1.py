@@ -171,24 +171,6 @@ def gestori_groups():
 
 
 
-@app.route('/gestori_csv_put', methods=['GET', 'POST'])
-def gestori_csv_put():
-
-    """ save gestori csv to /mnt/boffice """
-
-    group_id = request.args.get('group_id')
-    barcode = request.args.get('barcode')
-    name = request.args.get('name')
-    artic = request.args.get('artic')
-    measure = request.args.get('measure')
-
-    with open('/mnt/from_api.csv', 'a') as file:
-        file.write('input')
-
-    return render_template('api.v1.html')
-
-
-
 @app.route('/gestori_products', methods=['GET', 'POST'])
 def gestori_products():
 
@@ -202,10 +184,10 @@ def gestori_products():
     search = str(search.encode('utf8').strip())
 
     # set query string limit
-    if len(search) > 15:
+    if len(search) > 25:
         return jsonify({'count': 0, 'data': []})
 
-    total = app.config['cpool']['collection_gestori'].count()
+    #total = app.config['cpool']['collection_gestori'].count()
     page = int(request.args.get('page'))
     perPage = int(request.args.get('perPage'))
 
@@ -213,6 +195,12 @@ def gestori_products():
     end = start + perPage
 
     if search != '' and articul is None:
+        # need extra count
+        total = app.config['cpool']['collection_gestori'].find({
+            'Brand': {
+                '$regex': "^"+search, '$options': '-i'
+            }
+        }).count()
         pipe = [
             {
                 '$match': {
@@ -243,6 +231,7 @@ def gestori_products():
             }
         ]
     else:
+        total = app.config['cpool']['collection_gestori'].find().count()
         pipe = [
             {
                 '$skip': start
@@ -268,6 +257,9 @@ def gestori_products():
 
     # in case of articul is not empty
     if articul is not None:
+        total = app.config['cpool']['collection_gestori'].find({
+            'Artic': articul
+        }).count()
         pipe = [
             {
                 '$match': {'Artic': articul}
@@ -295,16 +287,20 @@ def gestori_products():
         ]
 
     out = app.config['cpool']['collection_gestori'].aggregate(pipe)
+    counted = list(out)
     out_list = {
         'count': total,
-        'data': list(out)
+        'data': counted
     }
+
     return jsonify(out_list)
 
 
 
 @app.route('/letu_products', methods=['GET', 'POST'])
 def letu_products():
+
+    """letoile products"""
 
     articul = request.args.get('art')
     search = request.args.get('search')
