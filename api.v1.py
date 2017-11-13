@@ -309,7 +309,6 @@ def letu_products():
 
     search = str(search.encode('utf8').strip())
 
-    total = app.config['cpool']['collection_letu_final'].count()
     page = int(request.args.get('page'))
     perPage = int(request.args.get('perPage'))
 
@@ -317,6 +316,11 @@ def letu_products():
     end = start + perPage
 
     if search != '':
+        total = app.config['cpool']['collection_letu_final'].find({
+            'brand': {
+                '$regex': "^"+search, '$options': '-i'
+            }
+        }).count()
         pipe = [
             {
                 '$match': {
@@ -348,6 +352,7 @@ def letu_products():
             }
         ]
     else:
+        total = app.config['cpool']['collection_letu_final'].find().count()
         pipe = [
             {
                 '$skip': start
@@ -375,6 +380,9 @@ def letu_products():
     # autocomplete
     # in case of articul is not empty
     if articul is not None:
+        total = app.config['cpool']['collection_letu_final'].find({
+            'articul': articul
+        }).count()
         pipe = [
             {
                 '$match': {'articul': articul}
@@ -417,7 +425,6 @@ def ilde_products():
 
     search = str(search.encode('utf8').strip())
 
-    total = app.config['cpool']['collection_ilde_final'].count()
     page = int(request.args.get('page'))
     perPage = int(request.args.get('perPage'))
 
@@ -425,6 +432,13 @@ def ilde_products():
     end = start + perPage
 
     if search != '':
+        total = app.config['cpool']['collection_ilde_final'].find(
+            {
+                'brand': {
+                    '$regex': "^"+search, '$options': '-i'
+                }
+            }
+        ).count()
         pipe = [
             {
                 '$match': {
@@ -454,6 +468,7 @@ def ilde_products():
             }
         ]
     else:
+        total = app.config['cpool']['collection_ilde_final'].find().count()
         pipe = [
             {
                 '$skip': start
@@ -478,6 +493,9 @@ def ilde_products():
 
     # in case of articul is not empty
     if articul is not None:
+        total = app.config['cpool']['collection_ilde_final'].find({
+            'articul': articul
+        }).count()
         pipe = [
             {
                 '$match': {'articul': articul}
@@ -525,7 +543,6 @@ def rive_products():
 
     search = str(search.encode('utf8').strip())
 
-    total = app.config['cpool']['collection_rive_final'].count()
     page = int(request.args.get('page'))
     perPage = int(request.args.get('perPage'))
 
@@ -533,6 +550,11 @@ def rive_products():
     end = start + perPage
 
     if search != '':
+        total = app.config['cpool']['collection_rive_final'].find({
+            'brand': {
+                '$regex': "^"+search, '$options': '-i'
+            }
+        }).count()
         pipe = [
             {
                 '$match': {
@@ -567,6 +589,7 @@ def rive_products():
             }
         ]
     else:
+        total = app.config['cpool']['collection_rive_final'].find().count()
         pipe = [
             {
                 '$skip': start
@@ -596,6 +619,9 @@ def rive_products():
 
     # in case of articul is not empty
     if articul is not None:
+        total = app.config['cpool']['collection_rive_final'].find({
+            'articul': articul
+        }).count()
         pipe = [
             {
                 '$match': {'code': articul}
