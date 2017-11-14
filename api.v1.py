@@ -171,13 +171,17 @@ def gestori_groups():
 
 
 
+#
+# GESTORI
+# products
+#
 @app.route('/gestori_products', methods=['GET', 'POST'])
 def gestori_products():
 
     # search by articul ?
-    articul = request.args.get('art')
+    articul = request.args.get('a')
     # or by string ?
-    search = request.args.get('search')
+    search = request.args.get('s')
     if search is None or search == 'undefined':
         search = ''
 
@@ -188,13 +192,14 @@ def gestori_products():
         return jsonify({'count': 0, 'data': []})
 
     #total = app.config['cpool']['collection_gestori'].count()
-    page = int(request.args.get('page'))
-    perPage = int(request.args.get('perPage'))
+    page = int(request.args.get('p'))
+    perPage = int(request.args.get('pP'))
+    keyword = request.args.get('kw')
 
     start = (page - 1) * perPage
     end = start + perPage
 
-    if search != '' and articul is None:
+    if search is not 'undefined' and articul is None:
         # need extra count
         total = app.config['cpool']['collection_gestori'].find({
             'Brand': {
@@ -252,6 +257,11 @@ def gestori_products():
                         'id': '$id'
                     }
                 }
+            },
+            {
+                '$sort': {
+                    'name': 1
+                }
             }
         ]
 
@@ -283,8 +293,61 @@ def gestori_products():
                         'id': '$id'
                     }
                 }
+            },
+            {
+                '$sort': {
+                    'name': 1
+                }
             }
         ]
+
+    # since the keyword is not empty
+    if keyword is not None and search is 'undefined':
+        pipe = [
+            {
+                '$match': {
+                    '$text': {
+                        '$search': search,
+                    }
+                }
+            },
+            {
+                '$limit': 300
+            },
+            {
+                '$sort': {
+                    'Name': 1
+                }
+            }
+        ]
+
+    # keyword and brand
+    if keyword is not None and search is not 'undefined':
+        pipe = [
+            {
+                '$match': {
+                    '$text': {
+                        '$search': keyword,
+                    }
+                }
+            },
+            {
+                '$match': {
+                    'Brand': {
+                        '$regex': "^"+search, '$options': '-i'
+                    }
+                }
+            },
+            {
+                '$limit': 300
+            },
+            {
+                '$sort': {
+                    'Name': 1
+                }
+            }
+        ]
+        print('KEYWORD + BRAND')
 
     out = app.config['cpool']['collection_gestori'].aggregate(pipe)
     counted = list(out)
@@ -749,7 +812,8 @@ def ft():
 
     # set query string limit
     if len(search) > 40 or len(search) < 2:
-        return jsonify({'count': 0, 'data': []})
+        # fix ngFor array
+        return jsonify([])
 
     if len(search) > 2:
         pipe = [
@@ -762,9 +826,14 @@ def ft():
             },
             {
                 '$limit': 300
+            },
+            {
+                '$sort': {
+                    'Name': 1
+                }
             }
         ]
-        
+
         if 'gest' in provider:
             out = app.config['cpool']['collection_gestori'].aggregate(pipe)
         if 'rive' in provider:
@@ -775,7 +844,8 @@ def ft():
             out = app.config['cpool']['collection_letu_final'].aggregate(pipe)
         return jsonify(dumps(out))
     else:
-        return jsonify({'count': 0, 'data': []})
+        # fix ngFor array
+        return jsonify([])
 
 
 
