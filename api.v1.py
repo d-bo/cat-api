@@ -6,6 +6,7 @@ import csv
 import json
 import pipes
 import urllib
+import urllib2
 import subprocess
 import pandas as pd
 import configparser
@@ -180,26 +181,39 @@ def gestori_products():
 
     # search by articul ?
     articul = request.args.get('a')
-    # or by string ?
-    search = request.args.get('s')
-    if search is None or search == 'undefined':
-        search = ''
-
-    search = str(search.encode('utf8').strip())
-
-    # set query string limit
-    if len(search) > 25:
-        return jsonify({'count': 0, 'data': []})
-
-    #total = app.config['cpool']['collection_gestori'].count()
     page = int(request.args.get('p'))
     perPage = int(request.args.get('pP'))
     keyword = request.args.get('kw')
+    search = request.args.get('s')
+
+    # rules
+    if articul == 'undefined' or articul == 'null' or articul is None:
+        articul = False
+    if search == 'undefined' or search == 'null' or search is None:
+        search = False
+    else:
+        search = str(search.encode('utf8').strip())
+        # set query string limit
+        if len(search) > 60:
+            return jsonify({'count': 0, 'data': []})
+    if keyword == 'undefined' or keyword == 'null' or keyword is None:
+        keyword = False
+
+    print('articul: ', articul, 'keyword: ', keyword, 'search: ', search)
+
+    if search is None or search == 'undefined':
+        search = ''
+
+    #total = app.config['cpool']['collection_gestori'].count()
 
     start = (page - 1) * perPage
     end = start + perPage
 
-    if search is not 'undefined' and articul is None:
+    def searchByBrand():
+        return False
+
+    # SEARCH BY BRAND
+    if search is not False and articul is False and keyword is False:
         # need extra count
         total = app.config['cpool']['collection_gestori'].find({
             'Brand': {
@@ -233,9 +247,16 @@ def gestori_products():
                         'id': '$id'
                     }
                 }
+            },
+            {
+                '$sort': {
+                    'name': 1
+                }
             }
         ]
-    else:
+        print('MATCH: ONLY BRAND')
+
+    if search is False and keyword is False and articul is False:
         total = app.config['cpool']['collection_gestori'].find().count()
         pipe = [
             {
@@ -264,9 +285,10 @@ def gestori_products():
                 }
             }
         ]
+        print('MATCH: ALL')
 
     # in case of articul is not empty
-    if articul is not None:
+    if articul is not False:
         total = app.config['cpool']['collection_gestori'].find({
             'Artic': articul
         }).count()
@@ -300,29 +322,17 @@ def gestori_products():
                 }
             }
         ]
+        print('MATCH: ARTICUL')
 
-    # since the keyword is not empty
-    if keyword is not None and search is 'undefined':
-        pipe = [
-            {
-                '$match': {
-                    '$text': {
-                        '$search': search,
-                    }
-                }
-            },
-            {
-                '$limit': 300
-            },
-            {
-                '$sort': {
-                    'Name': 1
-                }
-            }
-        ]
+
 
     # keyword and brand
-    if keyword is not None and search is not 'undefined':
+    if keyword is not False and search is not False and articul is False:
+        total = 65535
+        """
+        if search == '' and keyword == '':
+            return jsonify({'count': 0, 'data': []})
+        """
         pipe = [
             {
                 '$match': {
@@ -333,8 +343,51 @@ def gestori_products():
             },
             {
                 '$match': {
-                    'Brand': {
-                        '$regex': "^"+search, '$options': '-i'
+                    'Brand': search
+                }
+            },
+            {
+                '$skip': start
+            },
+            {
+                '$limit': perPage
+            },
+            {
+                '$group': {
+                    '_id': {
+                        'name': '$Name',
+                        'brand': '$Brand',
+                        'artic': '$Artic',
+                        'name_e': '$Name_e',
+                        'cod_good': '$Cod_good',
+                        'retail_price': '$Retail_price',
+                        'barcod': '$Barcod',
+                        'id': '$id'
+                    },
+                    'total': {
+                        '$sum': 'Name'
+                    }
+                }
+            },
+            {
+                '$sort': {
+                    'name': 1
+                }
+            }
+        ]
+        print('KEYWORD + BRAND ' + keyword)
+
+    # fulltext by keyword
+    if keyword is not False and search is False and articul is False:
+        total = app.config['cpool']['collection_gestori'].find({
+            'Name': keyword
+        }).count()
+        print('KEYWORD: ', keyword.encode('utf8').strip())
+        pipe = [
+            {
+                '$match': {
+                    '$text': {
+                        '$search': keyword,
                     }
                 }
             },
@@ -342,12 +395,26 @@ def gestori_products():
                 '$limit': 300
             },
             {
+                '$group': {
+                    '_id': {
+                        'name': '$Name',
+                        'brand': '$Brand',
+                        'artic': '$Artic',
+                        'name_e': '$Name_e',
+                        'cod_good': '$Cod_good',
+                        'retail_price': '$Retail_price',
+                        'barcod': '$Barcod',
+                        'id': '$id'
+                    }
+                }
+            },
+            {
                 '$sort': {
-                    'Name': 1
+                    'name': 1
                 }
             }
         ]
-        print('KEYWORD + BRAND')
+        print('ONLY KEYWORD')
 
     out = app.config['cpool']['collection_gestori'].aggregate(pipe)
     counted = list(out)
@@ -412,6 +479,11 @@ def letu_products():
                         'url': '$url'
                     }
                 }
+            },
+            {
+                '$sort': {
+                    'name': 1
+                }
             }
         ]
     else:
@@ -436,6 +508,11 @@ def letu_products():
                         'listingprice': '$listingprice',
                         'url': '$url'
                     }
+                }
+            },
+            {
+                '$sort': {
+                    'name': 1
                 }
             }
         ]
@@ -465,6 +542,11 @@ def letu_products():
                         'name_e': '$desc',
                         'id': '$id'
                     }
+                }
+            },
+            {
+                '$sort': {
+                    'name': 1
                 }
             }
         ]
@@ -528,6 +610,11 @@ def ilde_products():
                         'id': '$id'
                     }
                 }
+            },
+            {
+                '$sort': {
+                    'name': 1
+                }
             }
         ]
     else:
@@ -550,6 +637,11 @@ def ilde_products():
                         'listingprice': '$listingprice',
                         'id': '$id'
                     }
+                }
+            },
+            {
+                '$sort': {
+                    'name': 1
                 }
             }
         ]
@@ -580,6 +672,11 @@ def ilde_products():
                         'listingprice': '$listingprice',
                         'id': '$id'
                     }
+                }
+            },
+            {
+                '$sort': {
+                    'name': 1
                 }
             }
         ]
@@ -649,6 +746,11 @@ def rive_products():
                         'url': '$url'
                     }
                 }
+            },
+            {
+                '$sort': {
+                    'name': 1
+                }
             }
         ]
     else:
@@ -676,6 +778,11 @@ def rive_products():
                         'volumefieldname': '$volumefieldname',
                         'url': '$url'
                     }
+                }
+            },
+            {
+                '$sort': {
+                    'name': 1
                 }
             }
         ]
@@ -711,6 +818,11 @@ def rive_products():
                         'volumefieldname': '$volumefieldname',
                         'url': '$url'
                     }
+                }
+            },
+            {
+                '$sort': {
+                    'name': 1
                 }
             }
         ]
