@@ -186,9 +186,11 @@ def gestori_products():
     keyword = request.args.get('kw')
     search = request.args.get('s')
 
+    # articul deprecated (??)
     # rules
     if articul == 'undefined' or articul == 'null' or articul is None:
         articul = False
+
     if search == 'undefined' or search == 'null' or search is None:
         search = False
     else:
@@ -196,21 +198,19 @@ def gestori_products():
         # set query string limit
         if len(search) > 60:
             return jsonify({'count': 0, 'data': []})
-    if keyword == 'undefined' or keyword == 'null' or keyword is None:
+    if keyword == 'undefined' or keyword == 'null' or keyword is None or keyword == '':
         keyword = False
 
+    # dbg params
     print('articul: ', articul, 'keyword: ', keyword, 'search: ', search)
 
-    if search is None or search == 'undefined':
+    if search is None or search == 'undefined' or search == '' or search == 'null':
         search = ''
 
     #total = app.config['cpool']['collection_gestori'].count()
 
     start = (page - 1) * perPage
     end = start + perPage
-
-    def searchByBrand():
-        return False
 
     # SEARCH BY BRAND
     if search is not False and articul is False and keyword is False:
@@ -328,11 +328,37 @@ def gestori_products():
 
     # keyword and brand
     if keyword is not False and search is not False and articul is False:
-        total = 65535
-        """
-        if search == '' and keyword == '':
-            return jsonify({'count': 0, 'data': []})
-        """
+
+        # count before get
+        pipe = [
+            {
+                '$match': {
+                    '$text': {
+                        '$search': keyword,
+                    }
+                }
+            },
+            {
+                '$match': {
+                    'Brand': search
+                }
+            },
+            {
+                '$group': {
+                    '_id': {
+                        'name': '$Name'
+                    }
+                }
+            },
+            {
+                '$sort': {
+                    'name': 1
+                }
+            }
+        ]
+
+        total = len(list(app.config['cpool']['collection_gestori'].aggregate(pipe)))
+
         pipe = [
             {
                 '$match': {
@@ -363,9 +389,6 @@ def gestori_products():
                         'retail_price': '$Retail_price',
                         'barcod': '$Barcod',
                         'id': '$id'
-                    },
-                    'total': {
-                        '$sum': 'Name'
                     }
                 }
             },
@@ -375,6 +398,7 @@ def gestori_products():
                 }
             }
         ]
+
         print('KEYWORD + BRAND ' + keyword)
 
     # fulltext by keyword
@@ -434,10 +458,22 @@ def letu_products():
 
     articul = request.args.get('art')
     search = request.args.get('search')
-    if search is None or search == 'undefined':
-        search = ''
+    keyword = request.args.get('keyword')
 
-    search = str(search.encode('utf8').strip())
+    if search is None or search == 'undefined' or search == '' or search == 'null':
+        search = False
+    else:
+        search = str(search.encode('utf8').strip())
+
+    if keyword is None or keyword == 'undefined' or keyword == '' or keyword == 'null':
+        keyword = False
+    else:
+        keyword = str(keyword.encode('utf8').strip())
+
+    if articul is None or articul == 'undefined' or articul == '' or articul == 'null':
+        articul = False
+    else:
+        articul = str(articul.encode('utf8').strip())
 
     page = int(request.args.get('page'))
     perPage = int(request.args.get('perPage'))
@@ -445,18 +481,15 @@ def letu_products():
     start = (page - 1) * perPage
     end = start + perPage
 
-    if search != '':
+    # brand
+    if search is not False and keyword is False:
         total = app.config['cpool']['collection_letu_final'].find({
-            'brand': {
-                '$regex': "^"+search, '$options': '-i'
-            }
+            'brand': search
         }).count()
         pipe = [
             {
                 '$match': {
-                    'brand': {
-                        '$regex': "^"+search, '$options': '-i'
-                    }
+                    'brand': search
                 }
             },
             {
@@ -486,7 +519,9 @@ def letu_products():
                 }
             }
         ]
-    else:
+
+    # all
+    if search is False and keyword is False:
         total = app.config['cpool']['collection_letu_final'].find().count()
         pipe = [
             {
@@ -517,15 +552,39 @@ def letu_products():
             }
         ]
 
-    # autocomplete
-    # in case of articul is not empty
-    if articul is not None:
-        total = app.config['cpool']['collection_letu_final'].find({
-            'articul': articul
-        }).count()
+    # keyword
+    if search is False and keyword is not False:
         pipe = [
             {
-                '$match': {'articul': articul}
+                '$match': {
+                    '$text': keyword
+                }
+            },
+            {
+                '$group': {
+                    '_id': {
+                        'name': '$name',
+                        'brand': '$brand',
+                        'artic': '$articul',
+                        'desc': '$desc',
+                        'id': '$id',
+                        'img': '$img',
+                        'volume': '$volume',
+                        'listingprice': '$listingprice',
+                        'url': '$url'
+                    }
+                }
+            }
+        ]
+
+        total = app.config['cpool']['collection_letu_final'].aggregate(pipe)
+        total = len(list(total))
+
+        pipe = [
+            {
+                '$match': {
+                    '$text': keyword
+                }
             },
             {
                 '$skip': start
@@ -539,8 +598,12 @@ def letu_products():
                         'name': '$name',
                         'brand': '$brand',
                         'artic': '$articul',
-                        'name_e': '$desc',
-                        'id': '$id'
+                        'desc': '$desc',
+                        'id': '$id',
+                        'img': '$img',
+                        'volume': '$volume',
+                        'listingprice': '$listingprice',
+                        'url': '$url'
                     }
                 }
             },
@@ -565,10 +628,25 @@ def ilde_products():
 
     articul = request.args.get('art')
     search = request.args.get('search')
-    if search is None or search == 'undefined':
-        search = ''
+    keyword = request.args.get('keyword')
 
-    search = str(search.encode('utf8').strip())
+    if search is None or search == 'undefined' or search == '' or search == 'null':
+        search = False
+    else:
+        search = str(search.encode('utf8').strip())
+
+    if keyword is None or keyword == 'undefined' or keyword == '' or keyword == 'null':
+        keyword = False
+    else:
+        keyword = str(keyword.encode('utf8').strip())
+
+    if articul is None or articul == 'undefined' or articul == '' or articul == 'null':
+        articul = False
+    else:
+        articul = str(articul.encode('utf8').strip())
+
+    # dbg params
+    print('articul: ', articul, 'keyword: ', keyword, 'search: ', search)
 
     page = int(request.args.get('page'))
     perPage = int(request.args.get('perPage'))
@@ -576,20 +654,17 @@ def ilde_products():
     start = (page - 1) * perPage
     end = start + perPage
 
-    if search != '':
+    # brand
+    if search is not False and keyword is False:
         total = app.config['cpool']['collection_ilde_final'].find(
             {
-                'brand': {
-                    '$regex': "^"+search, '$options': '-i'
-                }
+                'brand': search
             }
         ).count()
         pipe = [
             {
                 '$match': {
-                    'brand': {
-                        '$regex': "^"+search, '$options': '-i'
-                    }
+                    'brand': search
                 }
             },
             {
@@ -617,7 +692,69 @@ def ilde_products():
                 }
             }
         ]
-    else:
+
+    # keyword
+    if search is False and keyword is not False:
+        pipe = [
+            {
+                '$match': {
+                    '$text': keyword
+                }
+            },
+            {
+                '$group': {
+                    '_id': {
+                        'name': '$pn',
+                        'brand': '$brand',
+                        'artic': '$articul',
+                        'image': '$image',
+                        'gestori_match': '$gestori',
+                        'listingprice': '$listingprice',
+                        'id': '$id'
+                    }
+                }
+            },
+            {
+                '$sort': {
+                    'name': 1
+                }
+            }
+        ]
+        total = len(list(app.config['cpool']['collection_ilde_final'].aggregate(pipe)))
+        pipe = [
+            {
+                '$match': {
+                    '$text': keyword
+                }
+            },
+            {
+                '$skip': start
+            },
+            {
+                '$limit': perPage
+            },
+            {
+                '$group': {
+                    '_id': {
+                        'name': '$pn',
+                        'brand': '$brand',
+                        'artic': '$articul',
+                        'image': '$image',
+                        'gestori_match': '$gestori',
+                        'listingprice': '$listingprice',
+                        'id': '$id'
+                    }
+                }
+            },
+            {
+                '$sort': {
+                    'name': 1
+                }
+            }
+        ]
+
+    # all
+    if search is False and keyword is False:
         total = app.config['cpool']['collection_ilde_final'].find().count()
         pipe = [
             {
@@ -645,41 +782,7 @@ def ilde_products():
                 }
             }
         ]
-
-    # in case of articul is not empty
-    if articul is not None:
-        total = app.config['cpool']['collection_ilde_final'].find({
-            'articul': articul
-        }).count()
-        pipe = [
-            {
-                '$match': {'articul': articul}
-            },
-            {
-                '$skip': start
-            },
-            {
-                '$limit': perPage
-            },
-            {
-                '$group': {
-                    '_id': {
-                        'name': '$pn',
-                        'brand': '$brand',
-                        'artic': '$articul',
-                        'image': '$image',
-                        'gestori_match': '$gestori',
-                        'listingprice': '$listingprice',
-                        'id': '$id'
-                    }
-                }
-            },
-            {
-                '$sort': {
-                    'name': 1
-                }
-            }
-        ]
+        print('ILDE MATCH ALL')
 
     out = app.config['cpool']['collection_ilde_final'].aggregate(pipe)
     out_list = {
@@ -694,14 +797,28 @@ def ilde_products():
 @app.route('/rive_products', methods=['GET', 'POST'])
 def rive_products():
 
-    # search by articul ?
     articul = request.args.get('art')
-    # or by string ?
     search = request.args.get('search')
-    if search is None or search == 'undefined':
-        search = ''
+    keyword = request.args.get('kw')
 
-    search = str(search.encode('utf8').strip())
+    if search is None or search == 'undefined' or search == '' or search == 'null':
+        search = False
+    else:
+        search = str(search.encode('utf8').strip())
+
+    if articul is None or articul == 'undefined' or articul == '' or articul == 'null':
+        articul = False
+    else:
+        articul = str(articul.encode('utf8').strip())
+
+    if keyword is None or keyword == 'undefined' or keyword == '' or keyword == 'null':
+        keyword = False
+    else:
+        keyword = str(keyword.encode('utf8').strip())
+
+
+
+    print('search:', search, 'articul:', articul, 'keyword:', keyword)
 
     page = int(request.args.get('page'))
     perPage = int(request.args.get('perPage'))
@@ -709,18 +826,15 @@ def rive_products():
     start = (page - 1) * perPage
     end = start + perPage
 
-    if search != '':
+    # only brand
+    if search is not False and keyword is False and articul is False:
         total = app.config['cpool']['collection_rive_final'].find({
-            'brand': {
-                '$regex': "^"+search, '$options': '-i'
-            }
+            'brand': search
         }).count()
         pipe = [
             {
                 '$match': {
-                    'brand': {
-                        '$regex': "^"+search, '$options': '-i'
-                    }
+                    'brand': search
                 }
             },
             {
@@ -753,9 +867,143 @@ def rive_products():
                 }
             }
         ]
-    else:
-        total = app.config['cpool']['collection_rive_final'].find().count()
+        print('MATCH BRAND')
+
+    # brand + keyword
+    if search is not False and keyword is not False and articul is False:
         pipe = [
+            {
+                '$match': {
+                    '$text': {
+                        '$search': keyword
+                    }
+                }
+            },
+            {
+                '$match': {
+                    'brand': search
+                }
+            },
+            {
+                '$skip': start
+            },
+            {
+                '$limit': perPage
+            },
+            {
+                '$group': {
+                    '_id': {
+                        'name': '$name',
+                        'brand': '$brand',
+                        'artic': '$articul',
+                        'desc': '$desc',
+                        'code': '$code',
+                        'image_url': '$image_url',
+                        'country': '$country',
+                        'id': '$id',
+                        'listingprice': '$listingprice',
+                        'volume': '$volume',
+                        'volumefieldname': '$volumefieldname',
+                        'url': '$url'
+                    }
+                }
+            },
+            {
+                '$sort': {
+                    'name': 1
+                }
+            }
+        ]
+
+        total = len(list(app.config['cpool']['collection_rive_final'].aggregate(pipe)))
+
+        pipe = [
+            {
+                '$match': {
+                    '$text': {
+                        '$search': keyword
+                    }
+                }
+            },
+            {
+                '$match': {
+                    'brand': search
+                }
+            },
+            {
+                '$skip': start
+            },
+            {
+                '$limit': perPage
+            },
+            {
+                '$group': {
+                    '_id': {
+                        'name': '$name',
+                        'brand': '$brand',
+                        'artic': '$articul',
+                        'desc': '$desc',
+                        'code': '$code',
+                        'image_url': '$image_url',
+                        'country': '$country',
+                        'id': '$id',
+                        'listingprice': '$listingprice',
+                        'volume': '$volume',
+                        'volumefieldname': '$volumefieldname',
+                        'url': '$url'
+                    }
+                }
+            },
+            {
+                '$sort': {
+                    'name': 1
+                }
+            }
+        ]
+
+    # only keyword
+    if search is False and keyword is not False and articul is False:
+        # first count
+        pipe = [
+            {
+                '$match': {
+                    '$text': {
+                        '$search': keyword
+                    }
+                }
+            },
+            {
+                '$group': {
+                    '_id': {
+                        'name': '$name',
+                        'brand': '$brand',
+                        'artic': '$articul',
+                        'desc': '$desc',
+                        'code': '$code',
+                        'image_url': '$image_url',
+                        'country': '$country',
+                        'id': '$id',
+                        'listingprice': '$listingprice',
+                        'volume': '$volume',
+                        'volumefieldname': '$volumefieldname',
+                        'url': '$url'
+                    }
+                }
+            }
+        ]
+        total = app.config['cpool']['collection_rive_final'].aggregate(pipe)
+        total = len(list(total))
+        print('TOTAL: ', total)
+
+        # then a real results
+        pipe = [
+            {
+                '$match': {
+                    '$text': {
+                        '$search': keyword
+                    }
+                }
+            },
             {
                 '$skip': start
             },
@@ -788,7 +1036,7 @@ def rive_products():
         ]
 
     # in case of articul is not empty
-    if articul is not None:
+    if articul is not False:
         total = app.config['cpool']['collection_rive_final'].find({
             'articul': articul
         }).count()
@@ -796,6 +1044,41 @@ def rive_products():
             {
                 '$match': {'code': articul}
             },
+            {
+                '$skip': start
+            },
+            {
+                '$limit': perPage
+            },
+            {
+                '$group': {
+                    '_id': {
+                        'name': '$name',
+                        'brand': '$brand',
+                        'artic': '$articul',
+                        'desc': '$desc',
+                        'code': '$code',
+                        'image_url': '$image_url',
+                        'country': '$country',
+                        'id': '$id',
+                        'listingprice': '$listingprice',
+                        'volume': '$volume',
+                        'volumefieldname': '$volumefieldname',
+                        'url': '$url'
+                    }
+                }
+            },
+            {
+                '$sort': {
+                    'name': 1
+                }
+            }
+        ]
+
+    # all what we have
+    if search is False and articul is False and keyword is False:
+        total = app.config['cpool']['collection_rive_final'].find().count()
+        pipe = [
             {
                 '$skip': start
             },
@@ -918,16 +1201,59 @@ def ft():
 
     provider = request.args.get('p')
     search = request.args.get('s')
-    if search is None or search == 'undefined':
-        search = ''
-    search = str(search.encode('utf8').strip())
+    brand = request.args.get('b')
 
-    # set query string limit
-    if len(search) > 40 or len(search) < 2:
-        # fix ngFor array
-        return jsonify([])
+    print('BRAND:', brand, 'SEARCH:', search)
 
-    if len(search) > 2:
+    # search param
+    if search is None or search == 'undefined' or search == '' or search == 'null':
+        search = False
+    else:
+        search = str(search.encode('utf8').strip())
+        # set query string limit
+        if len(search) > 40 or len(search) < 2:
+            # fix ngFor array
+            return jsonify([])
+
+    # brand param
+    if brand is None or brand == 'undefined' or brand == '' or brand == 'null':
+        brand = False
+    else:
+        brand = str(brand.encode('utf8').strip())
+
+    # only gestori has a upper B
+    if 'gest' in provider:
+        brand_field = 'Brand'
+    else:
+        brand_field = 'brand'
+
+    # keyword + brand
+    if brand is not False and search is not False:
+        pipe = [
+            {
+                '$match': {
+                    '$text': {
+                        '$search': search,
+                    }
+                }
+            },
+            {
+                '$match': {
+                    brand_field: brand
+                }
+            },
+            {
+                '$limit': 300
+            },
+            {
+                '$sort': {
+                    'Name': 1
+                }
+            }
+        ]
+
+    # only keyword
+    if brand is False and search is not False:
         pipe = [
             {
                 '$match': {
@@ -946,22 +1272,41 @@ def ft():
             }
         ]
 
-        if 'gest' in provider:
-            out = app.config['cpool']['collection_gestori'].aggregate(pipe)
-        if 'rive' in provider:
-            out = app.config['cpool']['collection_rive_final'].aggregate(pipe)
-        if 'ilde' in provider:
-            out = app.config['cpool']['collection_ilde_final'].aggregate(pipe)
-        if 'letu' in provider:
-            out = app.config['cpool']['collection_letu_final'].aggregate(pipe)
-        return jsonify(dumps(out))
-    else:
-        # fix ngFor array
+    # only brand
+    if brand is not False and search is False:
+        pipe = [
+            {
+                '$match': {
+                    brand_field: brand
+                }
+            },
+            {
+                '$limit': 300
+            },
+            {
+                '$sort': {
+                    'Name': 1
+                }
+            }
+        ]
+
+    # all false
+    if brand is False and search is False:
         return jsonify([])
+
+    if 'gest' in provider:
+        out = app.config['cpool']['collection_gestori'].aggregate(pipe)
+    if 'rive' in provider:
+        out = app.config['cpool']['collection_rive_final'].aggregate(pipe)
+    if 'ilde' in provider:
+        out = app.config['cpool']['collection_ilde_final'].aggregate(pipe)
+    if 'letu' in provider:
+        out = app.config['cpool']['collection_letu_final'].aggregate(pipe)
+    return jsonify(dumps(out))
 
 
 
 if __name__ == "__main__":
     app.jinja_env.auto_reload = True
     app.config['TEMPLATES_AUTO_RELOAD'] = True
-    app.run(host='0.0.0.0', threaded=True)
+    app.run(host='127.0.0.1', threaded=True)
