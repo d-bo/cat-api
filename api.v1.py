@@ -847,6 +847,7 @@ def rive_products():
                 '$group': {
                     '_id': {
                         'name': '$name',
+                        'name_e': '$name_e',
                         'brand': '$brand',
                         'artic': '$articul',
                         'desc': '$desc',
@@ -894,6 +895,7 @@ def rive_products():
                 '$group': {
                     '_id': {
                         'name': '$name',
+                        'name_e': '$name_e',
                         'brand': '$brand',
                         'artic': '$articul',
                         'desc': '$desc',
@@ -940,6 +942,7 @@ def rive_products():
                 '$group': {
                     '_id': {
                         'name': '$name',
+                        'name_e': '$name_e',
                         'brand': '$brand',
                         'artic': '$articul',
                         'desc': '$desc',
@@ -976,6 +979,7 @@ def rive_products():
                 '$group': {
                     '_id': {
                         'name': '$name',
+                        'name_e': '$name_e',
                         'brand': '$brand',
                         'artic': '$articul',
                         'desc': '$desc',
@@ -1014,6 +1018,7 @@ def rive_products():
                 '$group': {
                     '_id': {
                         'name': '$name',
+                        'name_e': '$name_e',
                         'brand': '$brand',
                         'artic': '$articul',
                         'desc': '$desc',
@@ -1054,6 +1059,7 @@ def rive_products():
                 '$group': {
                     '_id': {
                         'name': '$name',
+                        'name_e': '$name_e',
                         'brand': '$brand',
                         'artic': '$articul',
                         'desc': '$desc',
@@ -1089,6 +1095,7 @@ def rive_products():
                 '$group': {
                     '_id': {
                         'name': '$name',
+                        'name_e': '$name_e',
                         'brand': '$brand',
                         'artic': '$articul',
                         'desc': '$desc',
