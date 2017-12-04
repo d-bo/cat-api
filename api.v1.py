@@ -1124,7 +1124,9 @@ def rive_products():
     }
     for li, lv in enumerate(out_list['data']):
         for zi, zv in enumerate(out_list['data'][li]):
-            out_list['data'][li]['_id']['desc'] = out_list['data'][li]['_id']['desc'][:200]+" ..."
+            # trim description
+            if 'desc' in out_list['data'][li]['_id']:
+                out_list['data'][li]['_id']['desc'] = out_list['data'][li]['_id']['desc'][:200]+" ..."
 
     return jsonify(out_list)
 
