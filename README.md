@@ -1,3 +1,8 @@
+## Install
+```bash
+pip install -r requirements.txt
+```
+
 ## MongoDB
 ```sql
 db.gestori.createIndex({"Artic": 1, "Cod_good": 1, "Barcod": 1})

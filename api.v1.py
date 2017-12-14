@@ -8,7 +8,6 @@ import pipes
 import urllib
 import urllib2
 import subprocess
-import pandas as pd
 import configparser
 from datetime import datetime
 from bson.objectid import ObjectId
