@@ -107,7 +107,7 @@ def brands():
             ]}
         )
 
-    return jsonify(dumps(out))
+    return dumps(out)
 
 
 
@@ -117,7 +117,7 @@ def brands_letu():
     """ get letu brands """
 
     out = app.config['cpool']['brands_letu'].distinct("name")
-    return jsonify(dumps(out))
+    return dumps(out)
 
 
 
@@ -146,7 +146,7 @@ def all_brands():
     regx = re.compile("^"+search, re.IGNORECASE)
     out = app.config['cpool']['all_brands'].find({'val': regx})
 
-    return jsonify(dumps(out))
+    return dumps(out)
 
 
 
@@ -167,7 +167,7 @@ def gestori_groups():
     else:
         out = []
 
-    return jsonify(dumps(out))
+    return dumps(out)
 
 
 
@@ -1199,7 +1199,7 @@ def getMatched():
     res = app.config['cpool']['matched'].aggregate(pipe)
     res = list(res)
 
-    return jsonify(dumps(res))
+    return dumps(res)
 
 
 
@@ -1311,7 +1311,7 @@ def ft():
         out = app.config['cpool']['collection_ilde_final'].aggregate(pipe)
     if 'letu' in provider:
         out = app.config['cpool']['collection_letu_final'].aggregate(pipe)
-    return jsonify(dumps(out))
+    return dumps(out)
 
 
 
