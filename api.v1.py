@@ -511,6 +511,9 @@ def letu_products():
                         'img': '$img',
                         'volume': '$volume',
                         'listingprice': '$listingprice',
+                        'oldprice': '$oldprice',
+                        'LastUpdate': '$LastUpdate',
+                        'Navi': '$Navi',
                         'url': '$url'
                     }
                 }
@@ -544,6 +547,9 @@ def letu_products():
                         'img': '$img',
                         'volume': '$volume',
                         'listingprice': '$listingprice',
+                        'oldprice': '$oldprice',
+                        'LastUpdate': '$LastUpdate',
+                        'Navi': '$Navi',
                         'url': '$url'
                     }
                 }
@@ -603,6 +609,9 @@ def letu_products():
                         'img': '$img',
                         'volume': '$volume',
                         'listingprice': '$listingprice',
+                        'oldprice': '$oldprice',
+                        'LastUpdate': '$LastUpdate',
+                        'Navi': '$Navi',
                         'url': '$url'
                     }
                 }
@@ -672,6 +681,9 @@ def letu_products():
                         'img': '$img',
                         'volume': '$volume',
                         'listingprice': '$listingprice',
+                        'oldprice': '$oldprice',
+                        'LastUpdate': '$LastUpdate',
+                        'Navi': '$Navi',
                         'url': '$url'
                     }
                 }
@@ -749,8 +761,16 @@ def ilde_products():
                         'brand': '$brand',
                         'artic': '$articul',
                         'image': '$image',
-                        'gestori_match': '$gestori',
+                        'gestori': '$gestori',
                         'listingprice': '$listingprice',
+
+                        'desc': '$desc',
+                        'big_pic': '$big_pic',
+                        'vip_price': '$vip_price',
+                        'LastUpdate': '$LastUpdate',
+                        'Navi': '$Navi',
+                        'vol': '$vol',
+
                         'id': '$id'
                     }
                 }
@@ -777,8 +797,14 @@ def ilde_products():
                         'brand': '$brand',
                         'artic': '$articul',
                         'image': '$image',
-                        'gestori_match': '$gestori',
+                        'gestori': '$gestori',
                         'listingprice': '$listingprice',
+                        'desc': '$desc',
+                        'big_pic': '$big_pic',
+                        'vip_price': '$vip_price',
+                        'LastUpdate': '$LastUpdate',
+                        'Navi': '$Navi',
+                        'vol': '$vol',
                         'id': '$id'
                     }
                 }
@@ -809,8 +835,14 @@ def ilde_products():
                         'brand': '$brand',
                         'artic': '$articul',
                         'image': '$image',
-                        'gestori_match': '$gestori',
+                        'gestori': '$gestori',
+                        'desc': '$desc',
                         'listingprice': '$listingprice',
+                        'big_pic': '$big_pic',
+                        'vip_price': '$vip_price',
+                        'LastUpdate': '$LastUpdate',
+                        'Navi': '$Navi',
+                        'vol': '$vol',
                         'id': '$id'
                     }
                 }
@@ -839,8 +871,14 @@ def ilde_products():
                         'brand': '$brand',
                         'artic': '$articul',
                         'image': '$image',
-                        'gestori_match': '$gestori',
+                        'gestori': '$gestori',
+                        'desc': '$desc',
                         'listingprice': '$listingprice',
+                        'big_pic': '$big_pic',
+                        'vip_price': '$vip_price',
+                        'LastUpdate': '$LastUpdate',
+                        'Navi': '$Navi',
+                        'vol': '$vol',
                         'id': '$id'
                     }
                 }
@@ -907,6 +945,11 @@ def rive_products():
                 }
             },
             {
+                '$sort': {
+                    'lastupdate': -1
+                }
+            },
+            {
                 '$skip': start
             },
             {
@@ -930,13 +973,9 @@ def rive_products():
                         'lastupdate': '$lastupdate',
                         'volume': '$volume',
                         'volumefieldname': '$volumefieldname',
+                        'Navi': '$Navi',
                         'url': '$url'
                     }
-                }
-            },
-            {
-                '$sort': {
-                    'name': 1
                 }
             }
         ]
@@ -958,21 +997,10 @@ def rive_products():
                 }
             },
             {
-                '$skip': start
-            },
-            {
-                '$limit': perPage
-            },
-            {
                 '$group': {
                     '_id': {
-                        'id': '$id',
+                        'name': '$name',
                     }
-                }
-            },
-            {
-                '$sort': {
-                    'name': 1
                 }
             }
         ]
@@ -990,6 +1018,11 @@ def rive_products():
             {
                 '$match': {
                     'brand': search
+                }
+            },
+            {
+                '$sort': {
+                    'lastupdate': -1
                 }
             },
             {
@@ -1016,19 +1049,16 @@ def rive_products():
                         'lastupdate': '$lastupdate',
                         'volume': '$volume',
                         'volumefieldname': '$volumefieldname',
+                        'Navi': '$Navi',
                         'url': '$url'
                     }
-                }
-            },
-            {
-                '$sort': {
-                    'name': 1
                 }
             }
         ]
 
     # only keyword
     if search is False and keyword is not False and articul is False:
+        print "ONLY KEYWORD"
         # first count
         pipe = [
             {
@@ -1041,7 +1071,7 @@ def rive_products():
             {
                 '$group': {
                     '_id': {
-                        'id': '$id',
+                        'name': '$name',
                     }
                 }
             }
@@ -1083,13 +1113,9 @@ def rive_products():
                         'lastupdate': '$lastupdate',
                         'volume': '$volume',
                         'volumefieldname': '$volumefieldname',
+                        'Navi': '$Navi',
                         'url': '$url'
                     }
-                }
-            },
-            {
-                '$sort': {
-                    'name': 1
                 }
             }
         ]
@@ -1104,6 +1130,11 @@ def rive_products():
                 '$match': {'code': articul}
             },
             {
+                '$sort': {
+                    'lastupdate': -1
+                }
+            },
+            {
                 '$skip': start
             },
             {
@@ -1127,13 +1158,9 @@ def rive_products():
                         'lastupdate': '$lastupdate',
                         'volume': '$volume',
                         'volumefieldname': '$volumefieldname',
+                        'Navi': '$Navi',
                         'url': '$url'
                     }
-                }
-            },
-            {
-                '$sort': {
-                    'name': 1
                 }
             }
         ]
@@ -1143,6 +1170,11 @@ def rive_products():
         total = app.config['cpool']['collection_rive_final'].find().count()
         pipe = [
             {
+                '$sort': {
+                    'lastupdate': -1
+                }
+            },
+            {
                 '$skip': start
             },
             {
@@ -1166,15 +1198,11 @@ def rive_products():
                         'lastupdate': '$lastupdate',
                         'volume': '$volume',
                         'volumefieldname': '$volumefieldname',
+                        'navi': '$navi',
                         'url': '$url'
                     }
                 }
             },
-            {
-                '$sort': {
-                    'name': 1
-                }
-            }
         ]
 
     out = app.config['cpool']['collection_rive_final'].aggregate(pipe)
