@@ -767,6 +767,7 @@ def ilde_products():
                         'big_pic': '$big_pic',
                         'vip_price': '$vip_price',
                         'LastUpdate': '$LastUpdate',
+                        'date': '$date',
                         'Navi': '$Navi',
                         'vol': '$vol',
                         'id': '$id'
@@ -802,6 +803,7 @@ def ilde_products():
                         'big_pic': '$big_pic',
                         'vip_price': '$vip_price',
                         'LastUpdate': '$LastUpdate',
+                        'date': '$date',
                         'Navi': '$Navi',
                         'vol': '$vol',
                         'id': '$id'
@@ -841,6 +843,7 @@ def ilde_products():
                         'big_pic': '$big_pic',
                         'vip_price': '$vip_price',
                         'LastUpdate': '$LastUpdate',
+                        'date': '$date',
                         'Navi': '$Navi',
                         'vol': '$vol',
                         'id': '$id'
@@ -878,6 +881,7 @@ def ilde_products():
                         'big_pic': '$big_pic',
                         'vip_price': '$vip_price',
                         'LastUpdate': '$LastUpdate',
+                        'date': '$date',
                         'Navi': '$Navi',
                         'vol': '$vol',
                         'id': '$id'

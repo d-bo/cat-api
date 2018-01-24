@@ -10,7 +10,7 @@ pip install -r requirements.txt
 ```bash
 # Start
 cd parser-ilde
-sudo docker build -t ga/cat-api .
+sudo docker build --no-cache -t ga/cat-api .
 # !!! network host -> localhost MongoDB
 sudo docker run --network host -d --restart always --log-driver syslog ga/cat-api:latest
 # Stop
