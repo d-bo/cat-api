@@ -9,19 +9,18 @@ import urllib
 import urllib2
 import subprocess
 import configparser
+from flask import jsonify
+from lib.utils import Utils
 from datetime import datetime
+from lib.filters import Filters
+from bson.json_util import dumps
 from bson.objectid import ObjectId
 from flask_compress import Compress
+from flask_cors import CORS, cross_origin
 from werkzeug.utils import secure_filename
 from pymongo import MongoClient, ReturnDocument
 from flask_debugtoolbar import DebugToolbarExtension
 from flask import Flask, flash, render_template, request, redirect, g
-from flask import jsonify
-from bson.json_util import dumps
-from flask_cors import CORS, cross_origin
-
-from lib.filters import Filters
-from lib.utils import Utils
 
 
 
@@ -763,14 +762,13 @@ def ilde_products():
                         'image': '$image',
                         'gestori': '$gestori',
                         'listingprice': '$listingprice',
-
                         'desc': '$desc',
+                        'url': '$Url',
                         'big_pic': '$big_pic',
                         'vip_price': '$vip_price',
                         'LastUpdate': '$LastUpdate',
                         'Navi': '$Navi',
                         'vol': '$vol',
-
                         'id': '$id'
                     }
                 }
@@ -800,6 +798,7 @@ def ilde_products():
                         'gestori': '$gestori',
                         'listingprice': '$listingprice',
                         'desc': '$desc',
+                        'url': '$Url',
                         'big_pic': '$big_pic',
                         'vip_price': '$vip_price',
                         'LastUpdate': '$LastUpdate',
@@ -838,6 +837,7 @@ def ilde_products():
                         'gestori': '$gestori',
                         'desc': '$desc',
                         'listingprice': '$listingprice',
+                        'url': '$Url',
                         'big_pic': '$big_pic',
                         'vip_price': '$vip_price',
                         'LastUpdate': '$LastUpdate',
@@ -874,6 +874,7 @@ def ilde_products():
                         'gestori': '$gestori',
                         'desc': '$desc',
                         'listingprice': '$listingprice',
+                        'url': '$Url',
                         'big_pic': '$big_pic',
                         'vip_price': '$vip_price',
                         'LastUpdate': '$LastUpdate',
