@@ -4,6 +4,7 @@ import os
 import csv
 import socket
 import urllib2
+import datetime
 from PIL import Image
 import urllib, cStringIO
 from datetime import datetime
@@ -125,6 +126,31 @@ class Utils:
             'monthly': datetime.strftime(datetime.now(), "%m-%Y"),
             'daily': datetime.strftime(datetime.now(), "%d-%m-%Y")
         }
+
+
+
+    """
+    Get price collection
+    """
+    @staticmethod
+    def getPriceCollection(config, vendor, year, month):
+
+        if vendor is not None:
+
+            if year is None:
+                year = datetime.now().strftime("%Y")
+
+            if month is None:
+                month = datetime.now().strftime("%m")
+
+            if 'ILDE_MONGO_DB' in os.environ:
+                db = os.environ['ILDE_MONGO_DB']
+            else:
+                db = config['mongodb']['workdb']
+
+            MC = MongoClient(config['mongodb']['conn'])
+            cname = str(month)+'-'+str(year)+'_'+str(vendor)+'_price'
+            return MC[db][cname]
 
 
 

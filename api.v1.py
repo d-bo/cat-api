@@ -1207,7 +1207,7 @@ def rive_products():
                         'url': '$url'
                     }
                 }
-            },
+            }
         ]
 
     out = app.config['cpool']['collection_rive_final'].aggregate(pipe)
@@ -1223,6 +1223,36 @@ def rive_products():
                     out_list['data'][li]['_id']['desc'] = out_list['data'][li]['_id']['desc'][:200]+" ..."
 
     return jsonify(out_list)
+
+
+
+"""
+Find product prices
+"""
+@app.route('/rive_product_price', methods=['GET'])
+def rive_product_price():
+
+    out_list = []
+    articul = request.args.get('art')
+    year = request.args.get('y')
+    month = request.args.get('m')
+    day = request.args.get('d')
+
+    if articul is not None:
+        pipe = [
+            {
+                '$match': {'code': articul}
+            }
+        ]
+
+        coll = Utils.getPriceCollection(config, 'RIVE', year, month)
+        print coll
+        out = coll.aggregate(pipe)
+        #out = list(out)
+
+        #out = app.config['cpool']['collection_rive_price'].aggregate(pipe)
+
+    return dumps(out)
 
 
 
