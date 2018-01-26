@@ -236,7 +236,7 @@ def gestori_products():
                 '$group': {
                     '_id': {
                         'name': '$Name',
-                        'brand': '$Brand',
+                        'brand': '$cod_brand',
                         'artic': '$Artic',
                         'name_e': '$Name_e',
                         'cod_good': '$Cod_good',
@@ -267,7 +267,7 @@ def gestori_products():
                 '$group': {
                     '_id': {
                         'name': '$Name',
-                        'brand': '$Brand',
+                        'brand': '$cod_brand',
                         'artic': '$Artic',
                         'name_e': '$Name_e',
                         'cod_good': '$Cod_good',
@@ -304,7 +304,7 @@ def gestori_products():
                 '$group': {
                     '_id': {
                         'name': '$Name',
-                        'brand': '$Brand',
+                        'brand': '$cod_brand',
                         'artic': '$Artic',
                         'name_e': '$Name_e',
                         'cod_good': '$Cod_good',
@@ -380,7 +380,7 @@ def gestori_products():
                 '$group': {
                     '_id': {
                         'name': '$Name',
-                        'brand': '$Brand',
+                        'brand': '$cod_brand',
                         'artic': '$Artic',
                         'name_e': '$Name_e',
                         'cod_good': '$Cod_good',
@@ -420,7 +420,7 @@ def gestori_products():
                 '$group': {
                     '_id': {
                         'name': '$Name',
-                        'brand': '$Brand',
+                        'brand': '$cod_brand',
                         'artic': '$Artic',
                         'name_e': '$Name_e',
                         'cod_good': '$Cod_good',
