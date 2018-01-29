@@ -214,14 +214,14 @@ def gestori_products():
     if search is not False and articul is False and keyword is False:
         # need extra count
         total = app.config['cpool']['collection_gestori'].find({
-            'Brand': {
+            'cod_brand': {
                 '$regex': "^"+search, '$options': '-i'
             }
         }).count()
         pipe = [
             {
                 '$match': {
-                    'Brand': {
+                    'cod_brand': {
                         '$regex': "^"+search, '$options': '-i'
                     }
                 }
@@ -1092,7 +1092,7 @@ def rive_products():
                         'lastupdate': '$lastupdate',
                         'volume': '$volume',
                         'volumefieldname': '$volumefieldname',
-                        'Navi': '$Navi',
+                        'navi': '$navi',
                         'url': '$url'
                     }
                 }
@@ -1171,7 +1171,7 @@ def rive_products():
                         'lastupdate': '$lastupdate',
                         'volume': '$volume',
                         'volumefieldname': '$volumefieldname',
-                        'Navi': '$Navi',
+                        'navi': '$navi',
                         'url': '$url'
                     }
                 }
@@ -1260,7 +1260,7 @@ def rive_products():
                         'lastupdate': '$lastupdate',
                         'volume': '$volume',
                         'volumefieldname': '$volumefieldname',
-                        'Navi': '$Navi',
+                        'navi': '$navi',
                         'url': '$url'
                     }
                 }
@@ -1305,7 +1305,7 @@ def rive_products():
                         'lastupdate': '$lastupdate',
                         'volume': '$volume',
                         'volumefieldname': '$volumefieldname',
-                        'Navi': '$Navi',
+                        'navi': '$navi',
                         'url': '$url'
                     }
                 }
