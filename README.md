@@ -21,10 +21,10 @@ sudo docker kill <image_name>
 ## MongoDB
 ### Index
 ```sql
-db.gestori_new.createIndex({'Name': 'text', 'Name_e': 'text', 'Artic': 'text', 'Cod_good': 'text', 'Barcod': 'text', 'cod_brand': 'text'})
+db.gestori_new.createIndex({Name_e': 'text'})
 db.gestori.createIndex({"Artic": 1, "Cod_good": 1, "Barcod": 1})
 db.gestori.createIndex({'Name': 'text', 'Name_e': 'text'})
-db['RIVE_products_final'].createIndex({'name': 'text', 'desc': 'text', 'name_e': 'text', 'code': 'text'})
+db['RIVE_products_final'].createIndex({'name': 'text', 'name_e': 'text', 'brand': 'text'})
 db['letu_products_final'].createIndex({'name': 'text', 'desc': 'text', 'articul': 'text'})
 db['ILDE_products_final'].createIndex({'pn': 'text', 'pc': 'text', 'articul': 'text', 'brand': 'text'})
 ```

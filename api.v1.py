@@ -366,6 +366,9 @@ def gestori_products():
                 }
             },
             {
+                '$sort': { 'score': { '$meta': "textScore" } }
+            },
+            {
                 '$match': {
                     'Brand': search
                 }
@@ -414,7 +417,10 @@ def gestori_products():
                 }
             },
             {
-                '$limit': 300
+                '$sort': { 'score': { '$meta': "textScore" } }
+            },
+            {
+                '$limit': 100
             },
             {
                 '$group': {
@@ -592,6 +598,9 @@ def letu_products():
                 }
             },
             {
+                '$sort': { 'score': { '$meta': "textScore" } }
+            },
+            {
                 '$skip': start
             },
             {
@@ -659,6 +668,9 @@ def letu_products():
                 }
             },
             {
+                '$sort': { 'score': { '$meta': "textScore" } }
+            },
+            {
                 '$match': {
                     'brand': search
                 }
@@ -708,7 +720,9 @@ def ilde_products():
 
     articul = request.args.get('art')
     search = request.args.get('search')
-    keyword = request.args.get('keyword')
+    keyword = request.args.get('kw')
+
+    print('articul: ', articul, 'keyword: ', keyword, 'search: ', search)
 
     if search is None or search == 'undefined' or search == '' or search == 'null':
         search = False
@@ -736,11 +750,27 @@ def ilde_products():
 
     # brand
     if search is not False and keyword is False:
-        total = app.config['cpool']['collection_ilde_final'].find(
+        print "BRAND ONLY"
+        pipe = [
             {
-                'brand': search
+                '$match': {
+                    'brand': search
+                }
+            },
+            {
+                '$group': {
+                    '_id': {
+                        'brand': '$brand',
+                    }
+                }
+            },
+            {
+                '$sort': {
+                    'name': 1
+                }
             }
-        ).count()
+        ]
+        total = len(list(app.config['cpool']['collection_ilde_final'].aggregate(pipe)))
         pipe = [
             {
                 '$match': {
@@ -783,30 +813,19 @@ def ilde_products():
 
     # keyword
     if search is False and keyword is not False:
+        print "KEYWORD ONLY"
         pipe = [
             {
                 '$match': {
-                    '$text': keyword
+                    '$text': {
+                        '$search': keyword
+                    }
                 }
             },
             {
                 '$group': {
                     '_id': {
                         'name': '$pn',
-                        'brand': '$brand',
-                        'artic': '$articul',
-                        'image': '$image',
-                        'gestori': '$gestori',
-                        'listingprice': '$listingprice',
-                        'desc': '$desc',
-                        'url': '$Url',
-                        'big_pic': '$big_pic',
-                        'vip_price': '$vip_price',
-                        'LastUpdate': '$LastUpdate',
-                        'date': '$date',
-                        'Navi': '$Navi',
-                        'vol': '$vol',
-                        'id': '$id'
                     }
                 }
             },
@@ -820,8 +839,13 @@ def ilde_products():
         pipe = [
             {
                 '$match': {
-                    '$text': keyword
+                    '$text': {
+                        '$search': keyword
+                    }
                 }
+            },
+            {
+                '$sort': { 'score': { '$meta': "textScore" } }
             },
             {
                 '$skip': start
@@ -859,6 +883,7 @@ def ilde_products():
 
     # all
     if search is False and keyword is False:
+        print "ALL"
         total = app.config['cpool']['collection_ilde_final'].find().count()
         pipe = [
             {
@@ -895,6 +920,95 @@ def ilde_products():
             }
         ]
         print('ILDE MATCH ALL')
+
+    # keyword + brand
+    if search is not False and keyword is not False:
+        print "KEYWORD + BRAND"
+        pipe = [
+            {
+                '$project': {
+                    'brand': {'$toUpper': '$brand'}
+                }
+            },
+            {
+                '$match': {
+                    'brand': search
+                }
+            },
+            {
+                '$match': {
+                    '$text': {'$search': keyword}
+                }
+            },
+            {
+                '$sort': { 'score': { '$meta': "textScore" } }
+            },
+            {
+                '$group': {
+                    '_id': {
+                        'name': '$pn',
+                    }
+                }
+            },
+            {
+                '$sort': {
+                    'name': 1
+                }
+            }
+        ]
+        total = len(list(app.config['cpool']['collection_ilde_final'].aggregate(pipe)))
+        pipe = [
+            {
+                '$project': {
+                    'brand': {'$toUpper': '$brand'}
+                }
+            },
+            {
+                '$match': {
+                    'brand': search
+                }
+            },
+            {
+                '$match': {
+                    '$text': {'$search': keyword}
+                }
+            },
+            {
+                '$sort': { 'score': { '$meta': "textScore" } }
+            },
+            {
+                '$skip': start
+            },
+            {
+                '$limit': perPage
+            },
+            {
+                '$group': {
+                    '_id': {
+                        'name': '$pn',
+                        'brand': '$brand',
+                        'artic': '$articul',
+                        'image': '$image',
+                        'gestori': '$gestori',
+                        'desc': '$desc',
+                        'listingprice': '$listingprice',
+                        'url': '$Url',
+                        'big_pic': '$big_pic',
+                        'vip_price': '$vip_price',
+                        'LastUpdate': '$LastUpdate',
+                        'date': '$date',
+                        'Navi': '$Navi',
+                        'vol': '$vol',
+                        'id': '$id'
+                    }
+                }
+            },
+            {
+                '$sort': {
+                    'name': 1
+                }
+            }
+        ]
 
     out = app.config['cpool']['collection_ilde_final'].aggregate(pipe)
     out_list = {
@@ -1021,6 +1135,9 @@ def rive_products():
                 }
             },
             {
+                '$sort': { 'score': { '$meta': "textScore" } }
+            },
+            {
                 '$match': {
                     'brand': search
                 }
@@ -1061,6 +1178,32 @@ def rive_products():
             }
         ]
 
+
+
+    """
+    db['RIVE_products_final'].aggregate([
+                {
+                    '$match': {
+                        '$text': {
+                            '$search': 'Chanel Румяна JOUES CONTRASTE 4гр.тон 72 ROSE INITIAL'
+                        }
+                    }
+                },
+                {
+                    '$sort': { 'score': { '$meta': "textScore" } }
+                }
+            ])
+    """
+
+    """
+    db.getCollection('RIVE_products_final').find( { $text: { $search: "Chanel Румяна JOUES CONTRASTE 4гр.тон 72 ROSE INITIAL" } },
+       { score: { $meta: "textScore" } }
+    ).sort( { score: { $meta: "textScore" } } )
+
+    """
+
+
+
     # only keyword
     if search is False and keyword is not False and articul is False:
         print "ONLY KEYWORD"
@@ -1074,11 +1217,7 @@ def rive_products():
                 }
             },
             {
-                '$group': {
-                    '_id': {
-                        'name': '$name',
-                    }
-                }
+                '$sort': { 'score': { '$meta': "textScore" } }
             }
         ]
         total = app.config['cpool']['collection_rive_final'].aggregate(pipe)
@@ -1093,6 +1232,9 @@ def rive_products():
                         '$search': keyword
                     }
                 }
+            },
+            {
+                '$sort': { 'score': { '$meta': "textScore" } }
             },
             {
                 '$skip': start
@@ -1215,14 +1357,17 @@ def rive_products():
         'count': total,
         'data': list(out)
     }
+
+    """
     for li, lv in enumerate(out_list['data']):
         for zi, zv in enumerate(out_list['data'][li]):
             # trim description
             if 'desc' in out_list['data'][li]['_id']:
                 if out_list['data'][li]['_id']['desc'] is not None:
                     out_list['data'][li]['_id']['desc'] = out_list['data'][li]['_id']['desc'][:200]+" ..."
+    """
 
-    return jsonify(out_list)
+    return dumps(out_list)
 
 
 
@@ -1396,7 +1541,10 @@ def ft():
                 }
             },
             {
-                '$limit': 300
+                '$sort': { 'score': { '$meta': "textScore" } }
+            },
+            {
+                '$limit': 100
             },
             {
                 '$sort': {
