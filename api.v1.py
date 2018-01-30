@@ -242,6 +242,9 @@ def gestori_products():
                         'cod_good': '$Cod_good',
                         'retail_price': '$Retail_price',
                         'barcod': '$Barcod',
+                        'rive_match_code': '$rive_match_code',
+                        'ilde_match_code': '$ilde_match_code',
+                        'letu_match_code': '$letu_match_code',
                         'id': '$id'
                     }
                 }
@@ -273,6 +276,9 @@ def gestori_products():
                         'cod_good': '$Cod_good',
                         'retail_price': '$Retail_price',
                         'barcod': '$Barcod',
+                        'rive_match_code': '$rive_match_code',
+                        'ilde_match_code': '$ilde_match_code',
+                        'letu_match_code': '$letu_match_code',
                         'id': '$id'
                     }
                 }
@@ -310,6 +316,9 @@ def gestori_products():
                         'cod_good': '$Cod_good',
                         'retail_price': '$Retail_price',
                         'barcod': '$Barcod',
+                        'rive_match_code': '$rive_match_code',
+                        'ilde_match_code': '$ilde_match_code',
+                        'letu_match_code': '$letu_match_code',
                         'id': '$id'
                     }
                 }
@@ -389,6 +398,9 @@ def gestori_products():
                         'cod_good': '$Cod_good',
                         'retail_price': '$Retail_price',
                         'barcod': '$Barcod',
+                        'rive_match_code': '$rive_match_code',
+                        'ilde_match_code': '$ilde_match_code',
+                        'letu_match_code': '$letu_match_code',
                         'id': '$id'
                     }
                 }
@@ -432,6 +444,9 @@ def gestori_products():
                         'cod_good': '$Cod_good',
                         'retail_price': '$Retail_price',
                         'barcod': '$Barcod',
+                        'rive_match_code': '$rive_match_code',
+                        'ilde_match_code': '$ilde_match_code',
+                        'letu_match_code': '$letu_match_code',
                         'id': '$id'
                     }
                 }
@@ -519,7 +534,8 @@ def letu_products():
                         'oldprice': '$oldprice',
                         'LastUpdate': '$LastUpdate',
                         'Navi': '$Navi',
-                        'url': '$url'
+                        'url': '$url',
+                        'gest_match_code': '$gest_match_code'
                     }
                 }
             },
@@ -555,7 +571,8 @@ def letu_products():
                         'oldprice': '$oldprice',
                         'LastUpdate': '$LastUpdate',
                         'Navi': '$Navi',
-                        'url': '$url'
+                        'url': '$url',
+                        'gest_match_code': '$gest_match_code'
                     }
                 }
             },
@@ -620,7 +637,8 @@ def letu_products():
                         'oldprice': '$oldprice',
                         'LastUpdate': '$LastUpdate',
                         'Navi': '$Navi',
-                        'url': '$url'
+                        'url': '$url',
+                        'gest_match_code': '$gest_match_code'
                     }
                 }
             },
@@ -695,7 +713,8 @@ def letu_products():
                         'oldprice': '$oldprice',
                         'LastUpdate': '$LastUpdate',
                         'Navi': '$Navi',
-                        'url': '$url'
+                        'url': '$url',
+                        'gest_match_code': '$gest_match_code'
                     }
                 }
             },
@@ -800,7 +819,8 @@ def ilde_products():
                         'date': '$date',
                         'Navi': '$Navi',
                         'vol': '$vol',
-                        'id': '$id'
+                        'id': '$id',
+                        'gest_match_code': '$gest_match_code'
                     }
                 }
             },
@@ -870,7 +890,8 @@ def ilde_products():
                         'date': '$date',
                         'Navi': '$Navi',
                         'vol': '$vol',
-                        'id': '$id'
+                        'id': '$id',
+                        'gest_match_code': '$gest_match_code'
                     }
                 }
             },
@@ -909,7 +930,8 @@ def ilde_products():
                         'date': '$date',
                         'Navi': '$Navi',
                         'vol': '$vol',
-                        'id': '$id'
+                        'id': '$id',
+                        'gest_match_code': '$gest_match_code'
                     }
                 }
             },
@@ -999,7 +1021,8 @@ def ilde_products():
                         'date': '$date',
                         'Navi': '$Navi',
                         'vol': '$vol',
-                        'id': '$id'
+                        'id': '$id',
+                        'gest_match_code': '$gest_match_code'
                     }
                 }
             },
@@ -1093,7 +1116,8 @@ def rive_products():
                         'volume': '$volume',
                         'volumefieldname': '$volumefieldname',
                         'navi': '$navi',
-                        'url': '$url'
+                        'url': '$url',
+                        'gest_match_code': '$gest_match_code'
                     }
                 }
             }
@@ -1172,7 +1196,8 @@ def rive_products():
                         'volume': '$volume',
                         'volumefieldname': '$volumefieldname',
                         'navi': '$navi',
-                        'url': '$url'
+                        'url': '$url',
+                        'gest_match_code': '$gest_match_code'
                     }
                 }
             }
@@ -1261,7 +1286,8 @@ def rive_products():
                         'volume': '$volume',
                         'volumefieldname': '$volumefieldname',
                         'navi': '$navi',
-                        'url': '$url'
+                        'url': '$url',
+                        'gest_match_code': '$gest_match_code'
                     }
                 }
             }
@@ -1306,7 +1332,8 @@ def rive_products():
                         'volume': '$volume',
                         'volumefieldname': '$volumefieldname',
                         'navi': '$navi',
-                        'url': '$url'
+                        'url': '$url',
+                        'gest_match_code': '$gest_match_code'
                     }
                 }
             }
@@ -1346,7 +1373,8 @@ def rive_products():
                         'volume': '$volume',
                         'volumefieldname': '$volumefieldname',
                         'navi': '$navi',
-                        'url': '$url'
+                        'url': '$url',
+                        'gest_match_code': '$gest_match_code'
                     }
                 }
             }
@@ -1405,18 +1433,57 @@ def rive_product_price():
 def match():
 
     pipe = []
-    if 'rive' in request.json:
-        #find_doc['rive'] = request.json['rive']['code']
-        pipe.append({'$match': {'rive': {'code':request.json['rive']['code']}}})
+    setter = {}
+
     if 'gest' in request.json:
         #find_doc['gest'] = request.json['gest']['barcod']
         pipe.append({'$match': {'gest': {'barcod': request.json['gest']['barcod']}}})
+        gest_barcode = request.json['gest']['barcod']
+    if 'rive' in request.json:
+        #find_doc['rive'] = request.json['rive']['code']
+        pipe.append({'$match': {'rive': {'code':request.json['rive']['code']}}})
+        setter['rive_match_code'] = request.json['rive']['code']
+        # Set product matched
+        app.config['cpool']['collection_rive_final'].update_many(
+            {'code': request.json['rive']['code']},
+            {
+                '$set': {
+                    'gest_match_code': gest_barcode
+                }
+            }
+        )
     if 'letu' in request.json:
         #find_doc['letu'] = request.json['letu']['artic']
         pipe.append({'$match': {'letu': {'artic': request.json['letu']['artic']}}})
+        setter['letu_match_code'] = request.json['letu']['artic']
+        app.config['cpool']['collection_letu_final'].update_many(
+            {'articul': request.json['letu']['artic']},
+            {
+                '$set': {
+                    'gest_match_code': gest_barcode
+                }
+            }
+        )
     if 'ilde' in request.json:
         #find_doc['ilde'] = request.json['ilde']['artic']
         pipe.append({'$match': {'ilde': {'artic': request.json['ilde']['artic']}}})
+        setter['ilde_match_code'] = request.json['ilde']['artic']
+        app.config['cpool']['collection_ilde_final'].update_many(
+            {'articul': request.json['ilde']['artic']},
+            {
+                '$set': {
+                    'gest_match_code': gest_barcode
+                }
+            }
+        )
+    # Matched in gest doc
+    if len(setter) > 0:
+        app.config['cpool']['collection_gestori'].update_many(
+            {'Barcod': gest_barcode},
+            {
+                '$set': setter
+            }
+        )
 
     # check double
     #find = app.config['cpool']['matched'].find_one(find_doc)

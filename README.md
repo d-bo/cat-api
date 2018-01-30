@@ -51,9 +51,11 @@ db.createUser(
    }
 )
 ```
+
 ```sh
 sudo vi /etc/mongod.conf
 ```
+
 ```conf
 # network interfaces
 net:
@@ -63,6 +65,7 @@ net:
 security:
   authorization: 'enabled'
 ```
+
 ```sh
 #restart
 sudo service mongod restart
@@ -74,9 +77,11 @@ mongo -u superuser -p --authenticationDatabase admin
 ```bash
 mongoimport -d parser -c all_brands --type csv --file brends.csv --fields id,val --ignoreBlanks
 ```
+
 ```bash
 mongoimport --username sedova --password sedova --authenticationDatabase parser -d parser -c all_brands --type csv --file brnds.csv --fields id,val,val_en --ignoreBlanks
 ```
+
 ```bash
-mongoimport --host localhost --username apidev --password "apidev" --collection gestori_new --db parser --file /home/administrator/ArtPriceKatalog.csv --type csv --fields Artic,Cod_good,Name_e,Name,Barcod,Retail_price,cod_brand,name_brand --ignoreBlanks
+mongoimport --host localhost --username apidev --password "apidev" --collection gestori_up --db parser --file /home/administrator/ArtPriceKatalog.csv --type csv --fields Artic,Cod_good,Name_e,Name,Barcod,Retail_price,name_brand --ignoreBlanks
 ```
