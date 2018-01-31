@@ -25,8 +25,8 @@ db.gestori_new.createIndex({Name_e': 'text'})
 db.gestori.createIndex({"Artic": 1, "Cod_good": 1, "Barcod": 1})
 db.gestori.createIndex({'Name': 'text', 'Name_e': 'text'})
 db['RIVE_products_final'].createIndex({'name': 'text', 'name_e': 'text', 'brand': 'text'})
-db['letu_products_final'].createIndex({'name': 'text', 'desc': 'text', 'articul': 'text'})
-db['ILDE_products_final'].createIndex({'pn': 'text', 'pc': 'text', 'articul': 'text', 'brand': 'text'})
+db['letu_products_final'].createIndex({'name': 'text', 'desc': 'text', 'brand': 'text'})
+db['ILDE_products_final'].createIndex({'pn': 'text', 'articul': 'text', 'brand': 'text'})
 ```
 
 ### Users
@@ -84,4 +84,14 @@ mongoimport --username sedova --password sedova --authenticationDatabase parser 
 
 ```bash
 mongoimport --host localhost --username apidev --password "apidev" --collection gestori_up --db parser --file /home/administrator/ArtPriceKatalog.csv --type csv --fields Artic,Cod_good,Name_e,Name,Barcod,Retail_price,name_brand --ignoreBlanks
+```
+
+```sql
+# Clear matched gestori
+db['gestori_up'].update({Artic: {$exists: true}}, {$unset: {'rive_match_code': '', 'ilde_match_code': '', 'letu_match_code': ''}}, {multi: true})
+
+# Clear matched rive, ilde, letu
+db['letu_products_final'].update({gest_match_code: {$exists: true}}, {$unset: {'gest_match_code': ''}})
+db['RIVE_products_final'].update({gest_match_code: {$exists: true}}, {$unset: {'gest_match_code': ''}})
+db['ILDE_products_final'].update({gest_match_code: {$exists: true}}, {$unset: {'gest_match_code': ''}})
 ```

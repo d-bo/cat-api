@@ -1491,8 +1491,14 @@ def match():
     find = app.config['cpool']['matched'].aggregate(pipe)
     find = list(find)
 
+    match_doc = {
+        'rive_match_code': request.json['rive']['code'],
+        'ilde_match_code': request.json['ilde']['artic'],
+        'letu_match_code': request.json['letu']['artic']
+    }
+
     if len(find) == 0:
-        ins = app.config['cpool']['matched'].insert_one(request.json)
+        ins = app.config['cpool']['matched'].insert_one(match_doc)
         return jsonify({'double': 0})
     else:
         return jsonify({'double': 1})
