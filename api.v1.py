@@ -1434,15 +1434,18 @@ def match():
 
     pipe = []
     setter = {}
+    match_doc = {}   # final match doc
 
     if 'gest' in request.json:
         #find_doc['gest'] = request.json['gest']['barcod']
         pipe.append({'$match': {'gest': {'barcod': request.json['gest']['barcod']}}})
         gest_barcode = request.json['gest']['barcod']
+        match_doc['gest_match_code'] = request.json['gest']['barcod']
     if 'rive' in request.json:
         #find_doc['rive'] = request.json['rive']['code']
         pipe.append({'$match': {'rive': {'code':request.json['rive']['code']}}})
         setter['rive_match_code'] = request.json['rive']['code']
+        match_doc['rive_match_code'] = request.json['rive']['code']
         # Set product matched
         app.config['cpool']['collection_rive_final'].update_many(
             {'code': request.json['rive']['code']},
@@ -1456,6 +1459,7 @@ def match():
         #find_doc['letu'] = request.json['letu']['artic']
         pipe.append({'$match': {'letu': {'artic': request.json['letu']['artic']}}})
         setter['letu_match_code'] = request.json['letu']['artic']
+        match_doc['letu_match_code'] = request.json['letu']['artic']
         app.config['cpool']['collection_letu_final'].update_many(
             {'articul': request.json['letu']['artic']},
             {
@@ -1468,6 +1472,7 @@ def match():
         #find_doc['ilde'] = request.json['ilde']['artic']
         pipe.append({'$match': {'ilde': {'artic': request.json['ilde']['artic']}}})
         setter['ilde_match_code'] = request.json['ilde']['artic']
+        match_doc['ilde_match_code'] = request.json['ilde']['artic']
         app.config['cpool']['collection_ilde_final'].update_many(
             {'articul': request.json['ilde']['artic']},
             {
@@ -1491,11 +1496,7 @@ def match():
     find = app.config['cpool']['matched'].aggregate(pipe)
     find = list(find)
 
-    match_doc = {
-        'rive_match_code': request.json['rive']['code'],
-        'ilde_match_code': request.json['ilde']['artic'],
-        'letu_match_code': request.json['letu']['artic']
-    }
+    match_doc['date'] = datetime.strftime(datetime.now(), "%d-%m-%Y")
 
     if len(find) == 0:
         ins = app.config['cpool']['matched'].insert_one(match_doc)
@@ -1527,6 +1528,38 @@ def getMatched():
     end = start + perPage
 
     pipe = [
+        {
+            '$lookup': {
+               'from': 'RIVE_products_final',
+               'localField': 'rive_match_code',
+               'foreignField': 'code',
+               'as': 'rive'
+            }
+        },
+        {
+            '$lookup': {
+               'from': 'letu_products_final',
+               'localField': 'letu_match_code',
+               'foreignField': 'articul',
+               'as': 'letu'
+            }
+        },
+        {
+            '$lookup': {
+               'from': 'ILDE_products_final',
+               'localField': 'ilde_match_code',
+               'foreignField': 'articul',
+               'as': 'ilde'
+            }
+        },
+        {
+            '$lookup': {
+               'from': 'gestori_up',
+               'localField': 'gest_match_code',
+               'foreignField': 'Barcod',
+               'as': 'gest'
+            }
+        },
         {
             '$sort': {'_id': -1}
         },

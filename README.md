@@ -50,6 +50,16 @@ db.createUser(
        ]
    }
 )
+db.createUser(
+   {
+     user: "sedova_w",
+     pwd: "sedova_w",
+     roles:
+       [
+         { role: "readWrite", db: "parser" }
+       ]
+   }
+)
 ```
 
 ```sh
