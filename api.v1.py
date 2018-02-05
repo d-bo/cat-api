@@ -1595,7 +1595,7 @@ def ft():
     else:
         search = str(search.encode('utf8').strip())
         # set query string limit
-        if len(search) > 40 or len(search) < 2:
+        if len(search) > 40 or len(search) < 4:
             # fix ngFor array
             return jsonify([])
 
