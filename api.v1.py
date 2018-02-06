@@ -56,7 +56,7 @@ def add_no_cache(response):
 
 
 
-@app.route('/ping')
+@app.route('/v1/ping')
 def ping():
 
     """ PING """
@@ -75,7 +75,7 @@ def ping():
 
 
 
-@app.route('/brands', methods=['GET', 'POST'])
+@app.route('/v1/brands', methods=['GET', 'POST'])
 def brands():
 
     """ brands """
@@ -110,7 +110,7 @@ def brands():
 
 
 
-@app.route('/brands_letu', methods=['GET', 'POST'])
+@app.route('/v1/brands_letu', methods=['GET', 'POST'])
 def brands_letu():
 
     """ get letu brands """
@@ -120,7 +120,7 @@ def brands_letu():
 
 
 
-@app.route('/all_brands', methods=['GET', 'POST'])
+@app.route('/v1/all_brands', methods=['GET', 'POST'])
 def all_brands():
 
     """ merged letu + ilde brands """
@@ -149,7 +149,7 @@ def all_brands():
 
 
 
-@app.route('/gestori_groups', methods=['GET', 'POST'])
+@app.route('/v1/gestori_groups', methods=['GET', 'POST'])
 def gestori_groups():
 
     """ get letu brands """
@@ -174,7 +174,7 @@ def gestori_groups():
 # GESTORI
 # products
 #
-@app.route('/gestori_products', methods=['GET', 'POST'])
+@app.route('/v1/gestori_products', methods=['GET', 'POST'])
 def gestori_products():
 
     # search by articul ?
@@ -470,7 +470,7 @@ def gestori_products():
 
 
 
-@app.route('/letu_products', methods=['GET', 'POST'])
+@app.route('/v1/letu_products', methods=['GET', 'POST'])
 def letu_products():
 
     """letoile products"""
@@ -734,7 +734,7 @@ def letu_products():
 
 
 
-@app.route('/ilde_products', methods=['GET', 'POST'])
+@app.route('/v1/ilde_products', methods=['GET', 'POST'])
 def ilde_products():
 
     articul = request.args.get('art')
@@ -1043,7 +1043,7 @@ def ilde_products():
 
 
 
-@app.route('/rive_products', methods=['GET', 'POST'])
+@app.route('/v1/rive_products', methods=['GET', 'POST'])
 def rive_products():
 
     articul = request.args.get('art')
@@ -1402,7 +1402,7 @@ def rive_products():
 """
 Find product prices
 """
-@app.route('/rive_product_price', methods=['GET'])
+@app.route('/v1/rive_product_price', methods=['GET'])
 def rive_product_price():
 
     out_list = []
@@ -1429,7 +1429,7 @@ def rive_product_price():
 
 
 
-@app.route('/match', methods=['GET', 'POST'])
+@app.route('/v1/match', methods=['GET', 'POST'])
 def match():
 
     pipe = []
@@ -1511,7 +1511,7 @@ def match():
 
 
 
-@app.route('/getMatched', methods=['GET'])
+@app.route('/v1/getMatched', methods=['GET'])
 def getMatched():
 
     search = request.args.get('search')
@@ -1528,6 +1528,7 @@ def getMatched():
     end = start + perPage
 
     pipe = [
+        {'$match': {'deleted': {'$exists': False}}},
         {
             '$lookup': {
                'from': 'RIVE_products_final',
@@ -1578,7 +1579,30 @@ def getMatched():
 
 
 
-@app.route('/ft', methods=['GET', 'POST'])
+@app.route('/v1/matchDelete', methods=['POST'])
+def matchDelete():
+
+    """
+    Delete matched products
+    """
+    
+    oid = request.data
+    oid = json.loads(oid)
+    oid = oid['oid']
+
+    if oid is not None:
+        res = app.config['cpool']['matched'].update(
+                {"_id": ObjectId(oid)},
+                {'$set': {'deleted': Utils.getDbprefix()['daily']}}
+            )
+        print(res)
+
+    print("OID: "+oid)
+    return dumps({'status': 'ok'})
+
+
+
+@app.route('/v1/ft', methods=['GET', 'POST'])
 def ft():
 
     """ FULL TXT """
@@ -1696,4 +1720,4 @@ def ft():
 if __name__ == "__main__":
     app.jinja_env.auto_reload = True
     app.config['TEMPLATES_AUTO_RELOAD'] = True
-    app.run(host='0.0.0.0', threaded=True)
+    app.run(host='0.0.0.0', threaded=True, debug=True)
