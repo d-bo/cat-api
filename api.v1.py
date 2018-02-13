@@ -233,6 +233,11 @@ def gestori_products():
                 '$limit': perPage
             },
             {
+                '$sort': {
+                    'Name_e': 1
+                }
+            },
+            {
                 '$group': {
                     '_id': {
                         'name': '$Name',
@@ -245,13 +250,9 @@ def gestori_products():
                         'rive_match_code': '$rive_match_code',
                         'ilde_match_code': '$ilde_match_code',
                         'letu_match_code': '$letu_match_code',
+                        'verified': '$verified',
                         'id': '$id'
                     }
-                }
-            },
-            {
-                '$sort': {
-                    'name': 1
                 }
             }
         ]
@@ -267,6 +268,11 @@ def gestori_products():
                 '$limit': perPage
             },
             {
+                '$sort': {
+                    'Name_e': 1
+                }
+            },
+            {
                 '$group': {
                     '_id': {
                         'name': '$Name',
@@ -279,13 +285,9 @@ def gestori_products():
                         'rive_match_code': '$rive_match_code',
                         'ilde_match_code': '$ilde_match_code',
                         'letu_match_code': '$letu_match_code',
+                        'verified': '$verified',
                         'id': '$id'
                     }
-                }
-            },
-            {
-                '$sort': {
-                    'name': 1
                 }
             }
         ]
@@ -307,6 +309,11 @@ def gestori_products():
                 '$limit': perPage
             },
             {
+                '$sort': {
+                    'Name_e': 1
+                }
+            },
+            {
                 '$group': {
                     '_id': {
                         'name': '$Name',
@@ -319,13 +326,9 @@ def gestori_products():
                         'rive_match_code': '$rive_match_code',
                         'ilde_match_code': '$ilde_match_code',
                         'letu_match_code': '$letu_match_code',
+                        'verified': '$verified',
                         'id': '$id'
                     }
-                }
-            },
-            {
-                '$sort': {
-                    'name': 1
                 }
             }
         ]
@@ -347,7 +350,7 @@ def gestori_products():
             },
             {
                 '$match': {
-                    'Brand': search
+                    'cod_brand': search
                 }
             },
             {
@@ -355,11 +358,6 @@ def gestori_products():
                     '_id': {
                         'name': '$Name'
                     }
-                }
-            },
-            {
-                '$sort': {
-                    'name': 1
                 }
             }
         ]
@@ -379,7 +377,7 @@ def gestori_products():
             },
             {
                 '$match': {
-                    'Brand': search
+                    'cod_brand': search
                 }
             },
             {
@@ -387,6 +385,11 @@ def gestori_products():
             },
             {
                 '$limit': perPage
+            },
+            {
+                '$sort': {
+                    'Name_e': 1
+                }
             },
             {
                 '$group': {
@@ -401,13 +404,9 @@ def gestori_products():
                         'rive_match_code': '$rive_match_code',
                         'ilde_match_code': '$ilde_match_code',
                         'letu_match_code': '$letu_match_code',
+                        'verified': '$verified',
                         'id': '$id'
                     }
-                }
-            },
-            {
-                '$sort': {
-                    'name': 1
                 }
             }
         ]
@@ -435,6 +434,11 @@ def gestori_products():
                 '$limit': 100
             },
             {
+                '$sort': {
+                    'Name_e': 1
+                }
+            },
+            {
                 '$group': {
                     '_id': {
                         'name': '$Name',
@@ -447,13 +451,9 @@ def gestori_products():
                         'rive_match_code': '$rive_match_code',
                         'ilde_match_code': '$ilde_match_code',
                         'letu_match_code': '$letu_match_code',
+                        'verified': '$verified',
                         'id': '$id'
                     }
-                }
-            },
-            {
-                '$sort': {
-                    'name': 1
                 }
             }
         ]
@@ -524,6 +524,7 @@ def letu_products():
                 '$group': {
                     '_id': {
                         'name': '$name',
+                        'name_e': '$name_e',
                         'brand': '$brand',
                         'artic': '$articul',
                         'desc': '$desc',
@@ -561,6 +562,7 @@ def letu_products():
                 '$group': {
                     '_id': {
                         'name': '$name',
+                        'name_e': '$name_e',
                         'brand': '$brand',
                         'artic': '$articul',
                         'desc': '$desc',
@@ -627,6 +629,7 @@ def letu_products():
                 '$group': {
                     '_id': {
                         'name': '$name',
+                        'name_e': '$name_e',
                         'brand': '$brand',
                         'artic': '$articul',
                         'desc': '$desc',
@@ -703,6 +706,7 @@ def letu_products():
                 '$group': {
                     '_id': {
                         'name': '$name',
+                        'name_e': '$name_e',
                         'brand': '$brand',
                         'artic': '$articul',
                         'desc': '$desc',
@@ -948,18 +952,13 @@ def ilde_products():
         print "KEYWORD + BRAND"
         pipe = [
             {
-                '$project': {
-                    'brand': {'$toUpper': '$brand'}
-                }
-            },
-            {
-                '$match': {
-                    'brand': search
-                }
-            },
-            {
                 '$match': {
                     '$text': {'$search': keyword}
+                }
+            },
+            {
+                '$match': {
+                    'brand': search.upper()
                 }
             },
             {
@@ -981,18 +980,15 @@ def ilde_products():
         total = len(list(app.config['cpool']['collection_ilde_final'].aggregate(pipe)))
         pipe = [
             {
-                '$project': {
-                    'brand': {'$toUpper': '$brand'}
+                '$match': {
+                    '$text': {
+                            '$search': keyword
+                        }
                 }
             },
             {
                 '$match': {
-                    'brand': search
-                }
-            },
-            {
-                '$match': {
-                    '$text': {'$search': keyword}
+                    'brand': search.upper()
                 }
             },
             {
@@ -1563,12 +1559,6 @@ def getMatched():
         },
         {
             '$sort': {'_id': -1}
-        },
-        {
-            '$skip': start
-        },
-        {
-            '$limit': perPage
         }
     ]
 
@@ -1602,6 +1592,30 @@ def matchDelete():
 
 
 
+@app.route('/v1/gestMarkChecked', methods=['POST'])
+def gestMarkChecked():
+
+    """
+    Mark product as verified
+    """
+
+    oid = request.data
+    oid = json.loads(oid)
+    oid = oid['oid']
+
+    print(oid)
+
+    if oid is not None:
+        res = app.config['cpool']['collection_gestori'].update_many(
+                {"Cod_good": oid},
+                {'$set': {'verified': Utils.getDbprefix()['daily']}}
+            )
+        print(res)
+
+    return dumps({'status': 'ok'})
+
+
+
 @app.route('/v1/ft', methods=['GET', 'POST'])
 def ft():
 
@@ -1631,7 +1645,7 @@ def ft():
 
     # only gestori has a upper B
     if 'gest' in provider:
-        brand_field = 'Brand'
+        brand_field = 'cod_brand'
     else:
         brand_field = 'brand'
 
