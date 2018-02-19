@@ -515,6 +515,11 @@ def letu_products():
                 }
             },
             {
+                '$sort': {
+                    'LastUpdate': -1
+                }
+            },
+            {
                 '$skip': start
             },
             {
@@ -540,11 +545,6 @@ def letu_products():
                     }
                 }
             },
-            {
-                '$sort': {
-                    'name': 1
-                }
-            }
         ]
 
     # all
@@ -553,6 +553,11 @@ def letu_products():
         total = app.config['cpool']['collection_letu_final'].find().count()
         pipe = [
             {
+                '$sort': {
+                    'LastUpdate': -1
+                }
+            },
+            {
                 '$skip': start
             },
             {
@@ -576,11 +581,6 @@ def letu_products():
                         'url': '$url',
                         'gest_match_code': '$gest_match_code'
                     }
-                }
-            },
-            {
-                '$sort': {
-                    'name': 1
                 }
             }
         ]
@@ -620,6 +620,11 @@ def letu_products():
                 '$sort': { 'score': { '$meta': "textScore" } }
             },
             {
+                '$sort': {
+                    'LastUpdate': -1
+                }
+            },
+            {
                 '$skip': start
             },
             {
@@ -643,11 +648,6 @@ def letu_products():
                         'url': '$url',
                         'gest_match_code': '$gest_match_code'
                     }
-                }
-            },
-            {
-                '$sort': {
-                    'name': 1
                 }
             }
         ]
@@ -697,6 +697,11 @@ def letu_products():
                 }
             },
             {
+                '$sort': {
+                    'LastUpdate': -1
+                }
+            },
+            {
                 '$skip': start
             },
             {
@@ -720,11 +725,6 @@ def letu_products():
                         'url': '$url',
                         'gest_match_code': '$gest_match_code'
                     }
-                }
-            },
-            {
-                '$sort': {
-                    'name': 1
                 }
             }
         ]
@@ -801,6 +801,11 @@ def ilde_products():
                 }
             },
             {
+                '$sort': {
+                    'LastUpdate': -1
+                }
+            },
+            {
                 '$skip': start
             },
             {
@@ -826,11 +831,6 @@ def ilde_products():
                         'id': '$id',
                         'gest_match_code': '$gest_match_code'
                     }
-                }
-            },
-            {
-                '$sort': {
-                    'name': 1
                 }
             }
         ]
@@ -872,6 +872,11 @@ def ilde_products():
                 '$sort': { 'score': { '$meta': "textScore" } }
             },
             {
+                '$sort': {
+                    'LastUpdate': -1
+                }
+            },
+            {
                 '$skip': start
             },
             {
@@ -897,11 +902,6 @@ def ilde_products():
                         'id': '$id',
                         'gest_match_code': '$gest_match_code'
                     }
-                }
-            },
-            {
-                '$sort': {
-                    'name': 1
                 }
             }
         ]
@@ -912,6 +912,11 @@ def ilde_products():
         total = app.config['cpool']['collection_ilde_final'].find().count()
         pipe = [
             {
+                '$sort': {
+                    'LastUpdate': -1
+                }
+            },
+            {
                 '$skip': start
             },
             {
@@ -937,11 +942,6 @@ def ilde_products():
                         'id': '$id',
                         'gest_match_code': '$gest_match_code'
                     }
-                }
-            },
-            {
-                '$sort': {
-                    'name': 1
                 }
             }
         ]
@@ -970,11 +970,6 @@ def ilde_products():
                         'name': '$pn',
                     }
                 }
-            },
-            {
-                '$sort': {
-                    'name': 1
-                }
             }
         ]
         total = len(list(app.config['cpool']['collection_ilde_final'].aggregate(pipe)))
@@ -993,6 +988,11 @@ def ilde_products():
             },
             {
                 '$sort': { 'score': { '$meta': "textScore" } }
+            },
+            {
+                '$sort': {
+                    'LastUpdate': -1
+                }
             },
             {
                 '$skip': start
@@ -1020,11 +1020,6 @@ def ilde_products():
                         'id': '$id',
                         'gest_match_code': '$gest_match_code'
                     }
-                }
-            },
-            {
-                '$sort': {
-                    'name': 1
                 }
             }
         ]
@@ -1256,6 +1251,11 @@ def rive_products():
             },
             {
                 '$sort': { 'score': { '$meta': "textScore" } }
+            },
+            {
+                '$sort': {
+                    'lastupdate': -1
+                }
             },
             {
                 '$skip': start
