@@ -387,11 +387,6 @@ def gestori_products():
                 '$limit': perPage
             },
             {
-                '$sort': {
-                    'Name_e': 1
-                }
-            },
-            {
                 '$group': {
                     '_id': {
                         'name': '$Name',
@@ -432,11 +427,6 @@ def gestori_products():
             },
             {
                 '$limit': 100
-            },
-            {
-                '$sort': {
-                    'Name_e': 1
-                }
             },
             {
                 '$group': {
@@ -620,11 +610,6 @@ def letu_products():
                 '$sort': { 'score': { '$meta': "textScore" } }
             },
             {
-                '$sort': {
-                    'LastUpdate': -1
-                }
-            },
-            {
                 '$skip': start
             },
             {
@@ -694,11 +679,6 @@ def letu_products():
             {
                 '$match': {
                     'brand': search
-                }
-            },
-            {
-                '$sort': {
-                    'LastUpdate': -1
                 }
             },
             {
@@ -872,11 +852,6 @@ def ilde_products():
                 '$sort': { 'score': { '$meta': "textScore" } }
             },
             {
-                '$sort': {
-                    'LastUpdate': -1
-                }
-            },
-            {
                 '$skip': start
             },
             {
@@ -988,11 +963,6 @@ def ilde_products():
             },
             {
                 '$sort': { 'score': { '$meta': "textScore" } }
-            },
-            {
-                '$sort': {
-                    'LastUpdate': -1
-                }
             },
             {
                 '$skip': start
@@ -1158,11 +1128,6 @@ def rive_products():
                 }
             },
             {
-                '$sort': {
-                    'lastupdate': -1
-                }
-            },
-            {
                 '$skip': start
             },
             {
@@ -1251,11 +1216,6 @@ def rive_products():
             },
             {
                 '$sort': { 'score': { '$meta': "textScore" } }
-            },
-            {
-                '$sort': {
-                    'lastupdate': -1
-                }
             },
             {
                 '$skip': start
@@ -1689,11 +1649,6 @@ def ft():
             },
             {
                 '$limit': 100
-            },
-            {
-                '$sort': {
-                    'Name': 1
-                }
             }
         ]
 
