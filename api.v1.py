@@ -59,7 +59,7 @@ def add_no_cache(response):
 @app.route('/v1/ping')
 def ping():
 
-    """ PING """
+    """ PING PONG """
 
     pipeline = [
         {
