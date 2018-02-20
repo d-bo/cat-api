@@ -10,9 +10,9 @@ pip install -r requirements.txt
 ```bash
 # Start
 cd parser-ilde
-sudo docker build --no-cache -t ga/cat-api .
+sudo docker build --no-cache -t gapple/cat-api .
 # !!! network host -> localhost MongoDB
-sudo docker run --network host -d --restart always --log-driver syslog ga/cat-api:latest
+sudo docker run --network host -d --restart always --log-driver syslog gapple/cat-api:latest
 # Stop
 sudo docker ps
 sudo docker kill <image_name>
@@ -23,7 +23,7 @@ sudo docker kill <image_name>
 ```sql
 db.gestori_new.createIndex({Name_e': 'text'})
 db.gestori.createIndex({"Artic": 1, "Cod_good": 1, "Barcod": 1})
-db.gestori.createIndex({'Name': 'text', 'Name_e': 'text'})
+db.gestori.createIndex({'Name': 'text', 'Name_e': 'text', 'Artic': 'text', 'Cod_good': 'text'})
 db['RIVE_products_final'].createIndex({'name': 'text', 'name_e': 'text', 'brand': 'text'})
 db['letu_products_final'].createIndex({'name': 'text', 'desc': 'text', 'brand': 'text'})
 db['ILDE_products_final'].createIndex({'pn': 'text', 'articul': 'text', 'brand': 'text'})
