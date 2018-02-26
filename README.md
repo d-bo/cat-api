@@ -29,6 +29,11 @@ db['letu_products_final'].createIndex({'name': 'text', 'desc': 'text', 'brand': 
 db['ILDE_products_final'].createIndex({'pn': 'text', 'articul': 'text', 'brand': 'text'})
 ```
 
+### MongoDB Docker container
+```sh
+sudo docker run --network host -d --restart always --log-driver syslog -v /var/lib/mongodb:/data/db mongo
+```
+
 ### Users
 ```sql
 use admin
