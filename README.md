@@ -31,6 +31,7 @@ db['ILDE_products_final'].createIndex({'pn': 'text', 'articul': 'text', 'brand':
 
 ### MongoDB Docker container
 ```sh
+# Debugging: remove -d param
 sudo docker run --network host -d --restart always --log-driver syslog -v /var/lib/mongodb:/data/db mongo
 ```
 
@@ -99,6 +100,13 @@ mongoimport --username sedova --password sedova --authenticationDatabase parser 
 
 ```bash
 mongoimport --host localhost --username apidev --password "apidev" --collection gestori_up --db parser --file /home/administrator/ArtPriceKatalog.csv --type csv --fields Artic,Cod_good,Name_e,Name,Barcod,Retail_price,name_brand --ignoreBlanks
+```
+```js
+// Convert mongo NumberLong field to string
+db.gestori_up.find({Barcod: {$exists: true}}).forEach(function(obj) { 
+    obj.Barcod = obj.Barcod.valueOf().toString();
+    db.gestori_up.save(obj);
+});
 ```
 
 ```sql
