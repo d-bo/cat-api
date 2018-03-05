@@ -118,3 +118,6 @@ db['letu_products_final'].update({gest_match_code: {$exists: true}}, {$unset: {'
 db['RIVE_products_final'].update({gest_match_code: {$exists: true}}, {$unset: {'gest_match_code': ''}})
 db['ILDE_products_final'].update({gest_match_code: {$exists: true}}, {$unset: {'gest_match_code': ''}})
 ```
+
+## Redis
+sudo docker run --network host -d --restart always --log-driver syslog --name gapple-redis redis
