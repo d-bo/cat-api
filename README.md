@@ -120,4 +120,6 @@ db['ILDE_products_final'].update({gest_match_code: {$exists: true}}, {$unset: {'
 ```
 
 ## Redis
+```sh
 sudo docker run --network host -d --restart always --log-driver syslog --name gapple-redis redis
+```
