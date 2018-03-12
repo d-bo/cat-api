@@ -214,14 +214,14 @@ def gestori_products():
     if search is not False and articul is False and keyword is False:
         # need extra count
         total = app.config['cpool']['collection_gestori'].find({
-            'cod_brand': {
+            'name_brand': {
                 '$regex': "^"+search, '$options': '-i'
             }
         }).count()
         pipe = [
             {
                 '$match': {
-                    'cod_brand': {
+                    'name_brand': {
                         '$regex': "^"+search, '$options': '-i'
                     }
                 }
@@ -241,7 +241,7 @@ def gestori_products():
                 '$group': {
                     '_id': {
                         'name': '$Name',
-                        'brand': '$cod_brand',
+                        'brand': '$name_brand',
                         'artic': '$Artic',
                         'name_e': '$Name_e',
                         'cod_good': '$Cod_good',
@@ -276,7 +276,7 @@ def gestori_products():
                 '$group': {
                     '_id': {
                         'name': '$Name',
-                        'brand': '$cod_brand',
+                        'brand': '$name_brand',
                         'artic': '$Artic',
                         'name_e': '$Name_e',
                         'cod_good': '$Cod_good',
@@ -317,7 +317,7 @@ def gestori_products():
                 '$group': {
                     '_id': {
                         'name': '$Name',
-                        'brand': '$cod_brand',
+                        'brand': '$name_brand',
                         'artic': '$Artic',
                         'name_e': '$Name_e',
                         'cod_good': '$Cod_good',
@@ -350,7 +350,7 @@ def gestori_products():
             },
             {
                 '$match': {
-                    'cod_brand': search
+                    'name_brand': search
                 }
             },
             {
@@ -377,7 +377,7 @@ def gestori_products():
             },
             {
                 '$match': {
-                    'cod_brand': search
+                    'name_brand': search
                 }
             },
             {
@@ -390,7 +390,7 @@ def gestori_products():
                 '$group': {
                     '_id': {
                         'name': '$Name',
-                        'brand': '$cod_brand',
+                        'brand': '$name_brand',
                         'artic': '$Artic',
                         'name_e': '$Name_e',
                         'cod_good': '$Cod_good',
@@ -432,7 +432,7 @@ def gestori_products():
                 '$group': {
                     '_id': {
                         'name': '$Name',
-                        'brand': '$cod_brand',
+                        'brand': '$name_brand',
                         'artic': '$Artic',
                         'name_e': '$Name_e',
                         'cod_good': '$Cod_good',
@@ -1605,7 +1605,7 @@ def ft():
 
     # only gestori has a upper B
     if 'gest' in provider:
-        brand_field = 'cod_brand'
+        brand_field = 'name_brand'
     else:
         brand_field = 'brand'
 
@@ -1689,4 +1689,4 @@ def ft():
 if __name__ == "__main__":
     app.jinja_env.auto_reload = True
     app.config['TEMPLATES_AUTO_RELOAD'] = True
-    app.run(host='0.0.0.0', threaded=True, debug=True)
+    app.run(host='0.0.0.0', threaded=True, debug=False)
