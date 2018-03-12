@@ -3,10 +3,10 @@
 import os
 import csv
 import socket
-import urllib2
+import urllib.request, urllib.error, urllib.parse
 import datetime
 from PIL import Image
-import urllib, cStringIO
+import urllib.request, urllib.parse, urllib.error, io
 from datetime import datetime
 from pymongo import MongoClient
 
@@ -76,12 +76,12 @@ class Utils:
                 url = url.replace('156', '500')
                 url = url.replace('257', '500')
                 try:
-                    file = cStringIO.StringIO(urllib2.urlopen(url, timeout=20).read())
-                except urllib2.HTTPError as err:
+                    file = io.StringIO(urllib.request.urlopen(url, timeout=20).read())
+                except urllib.error.HTTPError as err:
                     print("Cannot open image url")
                     continue
                 except socket.timeout as err:
-                    print 'X SOCKET TIMEOUT ' + str(err)
+                    print('X SOCKET TIMEOUT ' + str(err))
                     continue
 
                 img = Image.open(file)
@@ -91,10 +91,10 @@ class Utils:
                     os.makedirs(new_dir)
                 new_file = new_dir+str(item['articul'])+".jpg"
                 if os.path.isfile(new_file) is not True:
-                    print("Image saved url: "+url)
+                    print(("Image saved url: "+url))
                     img.save(new_file)
                 else:
-                    print("Image allready exists: "+new_file)
+                    print(("Image allready exists: "+new_file))
 
             else:
                 print("\nNO IMAGE IN BASKET")
@@ -113,10 +113,10 @@ class Utils:
                 # insert img link to document
                 if preview_img_link is not None:
                     item['image'] = preview_img_link['href']
-                print("\n\n img -> mongo document: "+str(item)+"\np_ids: "+str(basket['p_ids'])+"\n")
+                print(("\n\n img -> mongo document: "+str(item)+"\np_ids: "+str(basket['p_ids'])+"\n"))
                 _id = collection.insert_one(item).inserted_id
             else:
-                print "Double: articul "+item['articul']
+                print("Double: articul "+item['articul'])
 
 
 

@@ -6,7 +6,6 @@ configparser==3.5.0
 Flask==0.12.1
 Flask-Compress==1.4.0
 Flask-DebugToolbar==0.10.1
-Flask-RBAC==0.3.0
 itsdangerous==0.24
 Jinja2==2.9.6
 lazy-object-proxy==1.2.1

@@ -5,8 +5,8 @@ import re
 import csv
 import json
 import pipes
-import urllib
-import urllib2
+import urllib.request, urllib.parse, urllib.error
+import urllib.request, urllib.error, urllib.parse
 import subprocess
 import configparser
 from flask import jsonify
@@ -53,6 +53,12 @@ def add_no_cache(response):
         response.headers["Cache-Control"] = "no-cache"
         response.headers["Pragma"] = "no-cache"
     return response
+
+
+
+@app.route('/')
+def index():
+    return 'GA'
 
 
 
@@ -200,7 +206,7 @@ def gestori_products():
         keyword = False
 
     # dbg params
-    print('articul: ', articul, 'keyword: ', keyword, 'search: ', search)
+    print(('articul: ', articul, 'keyword: ', keyword, 'search: ', search))
 
     if search is None or search == 'undefined' or search == '' or search == 'null':
         search = ''
@@ -406,14 +412,14 @@ def gestori_products():
             }
         ]
 
-        print('KEYWORD + BRAND ' + keyword)
+        print(('KEYWORD + BRAND ' + keyword))
 
     # fulltext by keyword
     if keyword is not False and search is False and articul is False:
         total = app.config['cpool']['collection_gestori'].find({
             'Name': keyword
         }).count()
-        print('KEYWORD: ', keyword.encode('utf8').strip())
+        print(('KEYWORD: ', keyword.encode('utf8').strip()))
         pipe = [
             {
                 '$match': {
@@ -490,7 +496,7 @@ def letu_products():
     start = (page - 1) * perPage
     end = start + perPage
 
-    print("kw", keyword, "s", search)
+    print(("kw", keyword, "s", search))
 
     # brand
     if search is not False and keyword is False:
@@ -725,7 +731,7 @@ def ilde_products():
     search = request.args.get('search')
     keyword = request.args.get('kw')
 
-    print('articul: ', articul, 'keyword: ', keyword, 'search: ', search)
+    print(('articul: ', articul, 'keyword: ', keyword, 'search: ', search))
 
     if search is None or search == 'undefined' or search == '' or search == 'null':
         search = False
@@ -743,7 +749,7 @@ def ilde_products():
         articul = str(articul.encode('utf8').strip())
 
     # dbg params
-    print('articul: ', articul, 'keyword: ', keyword, 'search: ', search)
+    print(('articul: ', articul, 'keyword: ', keyword, 'search: ', search))
 
     page = int(request.args.get('page'))
     perPage = int(request.args.get('perPage'))
@@ -753,7 +759,7 @@ def ilde_products():
 
     # brand
     if search is not False and keyword is False:
-        print "BRAND ONLY"
+        print("BRAND ONLY")
         pipe = [
             {
                 '$match': {
@@ -817,7 +823,7 @@ def ilde_products():
 
     # keyword
     if search is False and keyword is not False:
-        print "KEYWORD ONLY"
+        print("KEYWORD ONLY")
         pipe = [
             {
                 '$match': {
@@ -883,7 +889,7 @@ def ilde_products():
 
     # all
     if search is False and keyword is False:
-        print "ALL"
+        print("ALL")
         total = app.config['cpool']['collection_ilde_final'].find().count()
         pipe = [
             {
@@ -924,7 +930,7 @@ def ilde_products():
 
     # keyword + brand
     if search is not False and keyword is not False:
-        print "KEYWORD + BRAND"
+        print("KEYWORD + BRAND")
         pipe = [
             {
                 '$match': {
@@ -1028,7 +1034,7 @@ def rive_products():
 
 
 
-    print('search:', search, 'articul:', articul, 'keyword:', keyword)
+    print(('search:', search, 'articul:', articul, 'keyword:', keyword))
 
     page = int(request.args.get('page'))
     perPage = int(request.args.get('perPage'))
@@ -1187,7 +1193,7 @@ def rive_products():
 
     # only keyword
     if search is False and keyword is not False and articul is False:
-        print "ONLY KEYWORD"
+        print("ONLY KEYWORD")
         # first count
         pipe = [
             {
@@ -1203,7 +1209,7 @@ def rive_products():
         ]
         total = app.config['cpool']['collection_rive_final'].aggregate(pipe)
         total = len(list(total))
-        print('TOTAL: ', total)
+        print(('TOTAL: ', total))
 
         # then a real results
         pipe = [
@@ -1375,7 +1381,7 @@ def rive_product_price():
         ]
 
         coll = Utils.getPriceCollection(config, 'RIVE', year, month)
-        print coll
+        print(coll)
         out = coll.aggregate(pipe)
         #out = list(out)
 
@@ -1547,7 +1553,7 @@ def matchDelete():
             )
         print(res)
 
-    print("OID: "+oid)
+    print(("OID: "+oid))
     return dumps({'status': 'ok'})
 
 
@@ -1585,7 +1591,7 @@ def ft():
     search = request.args.get('s')
     brand = request.args.get('b')
 
-    print('BRAND:', brand, 'SEARCH:', search)
+    print(('BRAND:', brand, 'SEARCH:', search))
 
     # search param
     if search is None or search == 'undefined' or search == '' or search == 'null':
