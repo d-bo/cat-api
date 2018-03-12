@@ -107,6 +107,11 @@ db.gestori_up.find({Barcod: {$exists: true}}).forEach(function(obj) {
     obj.Barcod = obj.Barcod.valueOf().toString();
     db.gestori_up.save(obj);
 });
+// Convert matched fields
+db.matched.find({gest_match_code: {$exists: true}}).forEach(function(obj) { 
+    obj.gest_match_code = obj.gest_match_code.valueOf().toString();
+    db.matched.save(obj);
+});
 ```
 
 ```sql
