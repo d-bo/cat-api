@@ -27,6 +27,7 @@ db.gestori.createIndex({'Name': 'text', 'Name_e': 'text', 'Artic': 'text', 'Cod_
 db['RIVE_products_final'].createIndex({'name': 'text', 'name_e': 'text', 'brand': 'text'})
 db['letu_products_final'].createIndex({'name': 'text', 'desc': 'text', 'brand': 'text'})
 db['ILDE_products_final'].createIndex({'pn': 'text', 'articul': 'text', 'brand': 'text'})
+db['PODR_products_final'].createIndex({'name': 'text', 'articul': 'text', 'brand': 'text'})
 ```
 
 ### MongoDB Docker container

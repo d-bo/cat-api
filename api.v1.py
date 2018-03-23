@@ -1165,32 +1165,6 @@ def rive_products():
             }
         ]
 
-
-
-    """
-    db['RIVE_products_final'].aggregate([
-                {
-                    '$match': {
-                        '$text': {
-                            '$search': 'Chanel Румяна JOUES CONTRASTE 4гр.тон 72 ROSE INITIAL'
-                        }
-                    }
-                },
-                {
-                    '$sort': { 'score': { '$meta': "textScore" } }
-                }
-            ])
-    """
-
-    """
-    db.getCollection('RIVE_products_final').find( { $text: { $search: "Chanel Румяна JOUES CONTRASTE 4гр.тон 72 ROSE INITIAL" } },
-       { score: { $meta: "textScore" } }
-    ).sort( { score: { $meta: "textScore" } } )
-
-    """
-
-
-
     # only keyword
     if search is False and keyword is not False and articul is False:
         print("ONLY KEYWORD")
@@ -1348,14 +1322,271 @@ def rive_products():
         'data': list(out)
     }
 
-    """
-    for li, lv in enumerate(out_list['data']):
-        for zi, zv in enumerate(out_list['data'][li]):
-            # trim description
-            if 'desc' in out_list['data'][li]['_id']:
-                if out_list['data'][li]['_id']['desc'] is not None:
-                    out_list['data'][li]['_id']['desc'] = out_list['data'][li]['_id']['desc'][:200]+" ..."
-    """
+    return dumps(out_list)
+
+
+
+@app.route('/v1/podr_products', methods=['GET', 'POST'])
+def podr_products():
+
+    articul = request.args.get('art')
+    search = request.args.get('search')
+    keyword = request.args.get('kw')
+
+    if search is None or search == 'undefined' or search == '' or search == 'null':
+        search = False
+    else:
+        search = str(search.encode('utf8').strip())
+
+    if articul is None or articul == 'undefined' or articul == '' or articul == 'null':
+        articul = False
+    else:
+        articul = str(articul.encode('utf8').strip())
+
+    if keyword is None or keyword == 'undefined' or keyword == '' or keyword == 'null':
+        keyword = False
+    else:
+        keyword = str(keyword.encode('utf8').strip())
+
+
+
+    print(('search:', search, 'articul:', articul, 'keyword:', keyword))
+
+    page = int(request.args.get('page'))
+    perPage = int(request.args.get('perPage'))
+
+    start = (page - 1) * perPage
+    end = start + perPage
+
+    # only brand
+    if search is not False and keyword is False and articul is False:
+        total = app.config['cpool']['collection_podr_final'].find({
+            'brand': search
+        }).count()
+        pipe = [
+            {
+                '$match': {
+                    'brand': search
+                }
+            },
+            {
+                '$skip': start
+            },
+            {
+                '$limit': perPage
+            },
+            {
+                '$group': {
+                    '_id': {
+                        'name': '$name',
+                        'brand': '$brand',
+                        'country': '$country',
+                        'articul': '$articul',
+                        'img': '$img',
+                        'price': '$price',
+                        'navi': '$navi',
+                        'url': '$url',
+                        'date': '$date'
+                    }
+                }
+            }
+        ]
+        print('MATCH BRAND')
+
+    # brand + keyword
+    if search is not False and keyword is not False and articul is False:
+        pipe = [
+            {
+                '$match': {
+                    '$text': {
+                        '$search': keyword
+                    }
+                }
+            },
+            {
+                '$match': {
+                    'brand': search
+                }
+            },
+            {
+                '$group': {
+                    '_id': {
+                        'name': '$name',
+                    }
+                }
+            }
+        ]
+
+        total = len(list(app.config['cpool']['collection_podr_final'].aggregate(pipe)))
+
+        pipe = [
+            {
+                '$match': {
+                    '$text': {
+                        '$search': keyword
+                    }
+                }
+            },
+            {
+                '$sort': { 'score': { '$meta': "textScore" } }
+            },
+            {
+                '$match': {
+                    'brand': search
+                }
+            },
+            {
+                '$skip': start
+            },
+            {
+                '$limit': perPage
+            },
+            {
+                '$group': {
+                    '_id': {
+                        'name': '$name',
+                        'brand': '$brand',
+                        'country': '$country',
+                        'articul': '$articul',
+                        'img': '$img',
+                        'price': '$price',
+                        'navi': '$navi',
+                        'url': '$url',
+                        'date': '$date'
+                    }
+                }
+            }
+        ]
+
+    # only keyword
+    if search is False and keyword is not False and articul is False:
+        print("ONLY KEYWORD")
+        # first count
+        pipe = [
+            {
+                '$match': {
+                    '$text': {
+                        '$search': keyword
+                    }
+                }
+            },
+            {
+                '$sort': { 'score': { '$meta': "textScore" } }
+            }
+        ]
+        total = app.config['cpool']['collection_podr_final'].aggregate(pipe)
+        total = len(list(total))
+        print(('TOTAL: ', total))
+
+        # then a real results
+        pipe = [
+            {
+                '$match': {
+                    '$text': {
+                        '$search': keyword
+                    }
+                }
+            },
+            {
+                '$sort': { 'score': { '$meta': "textScore" } }
+            },
+            {
+                '$skip': start
+            },
+            {
+                '$limit': perPage
+            },
+            {
+                '$group': {
+                    '_id': {
+                        'name': '$name',
+                        'brand': '$brand',
+                        'country': '$country',
+                        'articul': '$articul',
+                        'img': '$img',
+                        'price': '$price',
+                        'navi': '$navi',
+                        'url': '$url',
+                        'date': '$date'
+                    }
+                }
+            }
+        ]
+
+    # in case of articul is not empty
+    if articul is not False:
+        total = app.config['cpool']['collection_podr_final'].find({
+            'articul': articul
+        }).count()
+        pipe = [
+            {
+                '$match': {'code': articul}
+            },
+            {
+                '$sort': {
+                    'lastupdate': -1
+                }
+            },
+            {
+                '$skip': start
+            },
+            {
+                '$limit': perPage
+            },
+            {
+                '$group': {
+                    '_id': {
+                        'name': '$name',
+                        'brand': '$brand',
+                        'country': '$country',
+                        'articul': '$articul',
+                        'img': '$img',
+                        'price': '$price',
+                        'navi': '$navi',
+                        'url': '$url',
+                        'date': '$date'
+                    }
+                }
+            }
+        ]
+
+    # all what we have
+    if search is False and articul is False and keyword is False:
+        total = app.config['cpool']['collection_podr_final'].find().count()
+        pipe = [
+            {
+                '$sort': {
+                    'lastupdate': -1
+                }
+            },
+            {
+                '$skip': start
+            },
+            {
+                '$limit': perPage
+            },
+            {
+                '$group': {
+                    '_id': {
+                        'name': '$name',
+                        'brand': '$brand',
+                        'country': '$country',
+                        'articul': '$articul',
+                        'img': '$img',
+                        'price': '$price',
+                        'navi': '$navi',
+                        'url': '$url',
+                        'date': '$date'
+                    }
+                }
+            }
+        ]
+
+    out = app.config['cpool']['collection_podr_final'].aggregate(pipe)
+    out_list = {
+        'count': total,
+        'data': list(out)
+    }
 
     return dumps(out_list)
 
@@ -1688,6 +1919,8 @@ def ft():
         out = app.config['cpool']['collection_ilde_final'].aggregate(pipe)
     if 'letu' in provider:
         out = app.config['cpool']['collection_letu_final'].aggregate(pipe)
+    if 'podr' in provider:
+        out = app.config['cpool']['collection_podr_final'].aggregate(pipe)
     return dumps(out)
 
 
@@ -1695,4 +1928,4 @@ def ft():
 if __name__ == "__main__":
     app.jinja_env.auto_reload = True
     app.config['TEMPLATES_AUTO_RELOAD'] = True
-    app.run(host='0.0.0.0', threaded=True, debug=False)
+    app.run(host='0.0.0.0', threaded=True, debug=True)
