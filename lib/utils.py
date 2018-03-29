@@ -12,9 +12,9 @@ from pymongo import MongoClient
 
 class Utils:
 
-    """ Class Utils """
-
-
+    """
+    Utils
+    """
 
     @staticmethod
     def parseSheetsCSV(csv_path):
