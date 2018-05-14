@@ -100,13 +100,71 @@ mongoimport --username sedova --password sedova --authenticationDatabase parser 
 ```
 
 ```bash
+
+# IMPORT GESTORI
+# 1
 mongoimport --host localhost --username apidev --password "apidev" --collection gestori_up --db parser --file /home/administrator/ArtPriceKatalog.csv --type csv --fields Artic,Cod_good,Name_e,Name,Barcod,Retail_price,name_brand --ignoreBlanks
-```
-```js
-// Convert mongo NumberLong field to string
-db.gestori_up.find({Barcod: {$exists: true}}).forEach(function(obj) { 
+
+
+
+# ArtPriceKatalog.sh
+# 
+# Deps: https://github.com/topkecleon/telegram-bot-bash
+
+DATE=`date '+%Y-%m-%d %H:%M:%S'|md5sum|awk {'print $1'}`
+cd /mnt
+
+sudo tmux new-window "cd /home/administrator/dev/telegram-bot-bash/ && bash bashbot.sh broadcast \"ArtPriceKatalog[$DATE]: Started ...\""
+cp -f ArtPriceKatalog.csv ArtPriceKatalog_copy.csv
+
+sudo sed -i -e 's/\,/\ /g' ArtPriceKatalog.csv
+sudo sed -i -e 's/\;/\,/g' ArtPriceKatalog.csv
+sudo sed -i -e 's/\"/\ /g' ArtPriceKatalog.csv
+
+sudo mongo localhost:27017/parser ArtPriceKatalogCopy.js
+
+mongoimport --host localhost --username apidev --password "apidev" --collection gestori_rc --db parser --file ArtPriceKatalog.csv --type csv --fields Artic,Cod_good,Name_$
+
+sudo tmux new-window "cd /home/administrator/dev/telegram-bot-bash/ && bash bashbot.sh broadcast \"ArtPriceKatalog[$DATE]: filter NumberLong gestori_rc ...\""
+sudo mongo localhost:27017/parser ArtPriceKatalogFilter.js
+
+sudo tmux new-window "cd /home/administrator/dev/telegram-bot-bash/ && bash bashbot.sh broadcast \"ArtPriceKatalog[$DATE]: Finished.\""
+
+
+
+# ArtPriceKatalogCopy.js
+db.gestori_rc.renameCollection("gestori_rc_bkp");
+
+
+
+# ArtPriceKatalogFilter.js
+db.gestori_rc.find({Barcod: {$exists: true}}).forEach(function(obj) {
     obj.Barcod = obj.Barcod.valueOf().toString();
-    db.gestori_up.save(obj);
+    db.gestori_rc.save(obj);
+});
+db.gestori_rc.find({Cod_good: {$exists: true}}).forEach(function(obj) {
+    obj.Cod_good = obj.Cod_good.valueOf().toString();
+    db.gestori_rc.save(obj);
+});
+
+
+
+# Artic,Cod_good,Name_e,Name,Barcod,Price_Kalinka,Price_Chelyabinsk,Price_Germes,Price_Kazan,Price_Novosib,Price_Kristall,Price_Kuncevo,Price_afimoll,Price_Passage,Price_Kristall,Price_Samara,Price_Rostov,cod_brand,name_brand
+
+```
+
+```js
+
+// IMPORT GESTORI
+// #2
+// Convert mongo NumberLong field to string
+db.gestori_rc1.find({Barcod: {$exists: true}}).forEach(function(obj) {
+    obj.Barcod = obj.Barcod.valueOf().toString();
+    db.gestori_rc1.save(obj);
+});
+db.gestori_rc1.find({Cod_good: {$exists: true}}).forEach(function(obj) {
+    obj.Cod_good = obj.Cod_good.valueOf().toString();
+    db.gestori_rc1.save(obj);
 });
 // Convert matched fields
 db.matched.find({gest_match_code: {$exists: true}}).forEach(function(obj) { 
