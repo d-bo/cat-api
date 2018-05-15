@@ -220,14 +220,14 @@ def gestori_products():
     if search is not False and articul is False and keyword is False:
         # need extra count
         total = app.config['cpool']['collection_gestori'].find({
-            'name_brand': {
+            'cod_brand': {
                 '$regex': "^"+search, '$options': '-i'
             }
         }).count()
         pipe = [
             {
                 '$match': {
-                    'name_brand': {
+                    'cod_brand': {
                         '$regex': "^"+search, '$options': '-i'
                     }
                 }
@@ -246,12 +246,23 @@ def gestori_products():
             {
                 '$group': {
                     '_id': {
-                        'name': '$Name',
-                        'brand': '$name_brand',
+                        'name': '$Name_e',
+                        'brand': '$cod_brand',
                         'artic': '$Artic',
                         'name_e': '$Name_e',
                         'cod_good': '$Cod_good',
-                        'retail_price': '$Retail_price',
+                        'price_kalinka': '$Price_Kalinka',
+                        'price_chel': '$Price_Chelyabinsk',
+                        'price_germes': '$Price_Germes',
+                        'price_kazan': '$Price_Kazan',
+                        'price_novosib': '$Price_Novosib',
+                        'price_kristall': '$Price_Kristall',
+                        'price_kuncevo': '$Price_Kuncevo',
+                        'price_afimoll': '$Price_afimoll',
+                        'price_passage': '$Price_Passage',
+                        'price_kristall_yar': '$Price_Kristall_yar',
+                        'price_samara': '$Price_Samara',
+                        'price_rostov': '$Price_Rostov',
                         'barcod': '$Barcod',
                         'rive_match_code': '$rive_match_code',
                         'ilde_match_code': '$ilde_match_code',
@@ -281,12 +292,23 @@ def gestori_products():
             {
                 '$group': {
                     '_id': {
-                        'name': '$Name',
-                        'brand': '$name_brand',
+                        'name': '$Name_e',
+                        'brand': '$cod_brand',
                         'artic': '$Artic',
                         'name_e': '$Name_e',
                         'cod_good': '$Cod_good',
-                        'retail_price': '$Retail_price',
+                        'price_kalinka': '$Price_Kalinka',
+                        'price_chel': '$Price_Chelyabinsk',
+                        'price_germes': '$Price_Germes',
+                        'price_kazan': '$Price_Kazan',
+                        'price_novosib': '$Price_Novosib',
+                        'price_kristall': '$Price_Kristall',
+                        'price_kuncevo': '$Price_Kuncevo',
+                        'price_afimoll': '$Price_afimoll',
+                        'price_passage': '$Price_Passage',
+                        'price_kristall_yar': '$Price_Kristall_yar',
+                        'price_samara': '$Price_Samara',
+                        'price_rostov': '$Price_Rostov',
                         'barcod': '$Barcod',
                         'rive_match_code': '$rive_match_code',
                         'ilde_match_code': '$ilde_match_code',
@@ -322,12 +344,23 @@ def gestori_products():
             {
                 '$group': {
                     '_id': {
-                        'name': '$Name',
-                        'brand': '$name_brand',
+                        'name': '$Name_e',
+                        'brand': '$cod_brand',
                         'artic': '$Artic',
                         'name_e': '$Name_e',
                         'cod_good': '$Cod_good',
-                        'retail_price': '$Retail_price',
+                        'price_kalinka': '$Price_Kalinka',
+                        'price_chel': '$Price_Chelyabinsk',
+                        'price_germes': '$Price_Germes',
+                        'price_kazan': '$Price_Kazan',
+                        'price_novosib': '$Price_Novosib',
+                        'price_kristall': '$Price_Kristall',
+                        'price_kuncevo': '$Price_Kuncevo',
+                        'price_afimoll': '$Price_afimoll',
+                        'price_passage': '$Price_Passage',
+                        'price_kristall_yar': '$Price_Kristall_yar',
+                        'price_samara': '$Price_Samara',
+                        'price_rostov': '$Price_Rostov',
                         'barcod': '$Barcod',
                         'rive_match_code': '$rive_match_code',
                         'ilde_match_code': '$ilde_match_code',
@@ -356,7 +389,7 @@ def gestori_products():
             },
             {
                 '$match': {
-                    'name_brand': search
+                    'cod_brand': search
                 }
             },
             {
@@ -383,7 +416,7 @@ def gestori_products():
             },
             {
                 '$match': {
-                    'name_brand': search
+                    'cod_brand': search
                 }
             },
             {
@@ -395,12 +428,23 @@ def gestori_products():
             {
                 '$group': {
                     '_id': {
-                        'name': '$Name',
-                        'brand': '$name_brand',
+                        'name': '$Name_e',
+                        'brand': '$cod_brand',
                         'artic': '$Artic',
                         'name_e': '$Name_e',
                         'cod_good': '$Cod_good',
-                        'retail_price': '$Retail_price',
+                        'price_kalinka': '$Price_Kalinka',
+                        'price_chel': '$Price_Chelyabinsk',
+                        'price_germes': '$Price_Germes',
+                        'price_kazan': '$Price_Kazan',
+                        'price_novosib': '$Price_Novosib',
+                        'price_kristall': '$Price_Kristall',
+                        'price_kuncevo': '$Price_Kuncevo',
+                        'price_afimoll': '$Price_afimoll',
+                        'price_passage': '$Price_Passage',
+                        'price_kristall_yar': '$Price_Kristall_yar',
+                        'price_samara': '$Price_Samara',
+                        'price_rostov': '$Price_Rostov',
                         'barcod': '$Barcod',
                         'rive_match_code': '$rive_match_code',
                         'ilde_match_code': '$ilde_match_code',
@@ -437,12 +481,23 @@ def gestori_products():
             {
                 '$group': {
                     '_id': {
-                        'name': '$Name',
-                        'brand': '$name_brand',
+                        'name': '$Name_e',
+                        'brand': '$cod_brand',
                         'artic': '$Artic',
                         'name_e': '$Name_e',
                         'cod_good': '$Cod_good',
-                        'retail_price': '$Retail_price',
+                        'price_kalinka': '$Price_Kalinka',
+                        'price_chel': '$Price_Chelyabinsk',
+                        'price_germes': '$Price_Germes',
+                        'price_kazan': '$Price_Kazan',
+                        'price_novosib': '$Price_Novosib',
+                        'price_kristall': '$Price_Kristall',
+                        'price_kuncevo': '$Price_Kuncevo',
+                        'price_afimoll': '$Price_afimoll',
+                        'price_passage': '$Price_Passage',
+                        'price_kristall_yar': '$Price_Kristall_yar',
+                        'price_samara': '$Price_Samara',
+                        'price_rostov': '$Price_Rostov',
                         'barcod': '$Barcod',
                         'rive_match_code': '$rive_match_code',
                         'ilde_match_code': '$ilde_match_code',

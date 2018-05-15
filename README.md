@@ -138,6 +138,7 @@ db.gestori_rc.renameCollection("gestori_rc_bkp");
 
 
 # ArtPriceKatalogFilter.js
+db.gestori_rc.remove({Artic: "Artic"});
 db.gestori_rc.find({Barcod: {$exists: true}}).forEach(function(obj) {
     obj.Barcod = obj.Barcod.valueOf().toString();
     db.gestori_rc.save(obj);
