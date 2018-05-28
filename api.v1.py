@@ -1811,10 +1811,13 @@ def getMatched():
         },
         {
             '$sort': {'_id': -1}
+        },
+        {
+            '$limit': perPage
         }
     ]
 
-    res = app.config['cpool']['matched'].aggregate(pipe)
+    res = app.config['cpool']['matched'].aggregate(pipe, useCursor=True)
     res = list(res)
 
     return dumps(res)
