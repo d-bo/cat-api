@@ -147,6 +147,10 @@ db.gestori_rc.find({Cod_good: {$exists: true}}).forEach(function(obj) {
     obj.Cod_good = obj.Cod_good.valueOf().toString();
     db.gestori_rc.save(obj);
 });
+db['letu_products_final_bkp'].find({listingprice: {$eq: "default"}}).forEach(function(obj) {
+    obj.listingprice = "";
+    db['letu_products_final_bkp'].save(obj);
+});
 
 
 
