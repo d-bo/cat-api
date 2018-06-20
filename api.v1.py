@@ -1983,7 +1983,7 @@ def ft():
 
 
 
-@app.route('/v1/auth', methods=['GET'])
+@app.route('/v1/auth', methods=['POST'])
 def auth():
 
     """
