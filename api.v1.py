@@ -1983,6 +1983,15 @@ def ft():
 
 
 
+@app.route('/v1/auth', methods=['GET'])
+def auth():
+
+    """
+    Authenticate
+    """
+
+    return dumps({'name': 'John Doe', 'age': 18})
+
 if __name__ == "__main__":
     app.jinja_env.auto_reload = True
     app.config['TEMPLATES_AUTO_RELOAD'] = True
