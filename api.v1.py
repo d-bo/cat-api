@@ -3,6 +3,7 @@
 import os
 import re
 import csv
+import jwt
 import json
 import pipes
 import urllib.request, urllib.parse, urllib.error
@@ -1983,14 +1984,15 @@ def ft():
 
 
 
-@app.route('/v1/auth', methods=['POST'])
+@app.route('/v1/auth', methods=['POST', 'GET'])
 def auth():
 
     """
     Authenticate
     """
 
-    return dumps({'name': 'John Doe', 'age': 18})
+    encoded = jwt.encode({'name': 'JohnDoe', 'status': 'stupid'}, 'mysecret', algorithm='HS256')
+    return dumps({'token': encoded.decode('utf-8')})
 
 if __name__ == "__main__":
     app.jinja_env.auto_reload = True
