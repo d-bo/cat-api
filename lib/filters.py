@@ -113,3 +113,14 @@ class Filters:
                 return True
 
         return False      # no duplicate found
+
+
+
+    @staticmethod
+    def validate_auth(cpool, login, password):
+
+        """
+        Server side validate auth
+        """
+
+        return False

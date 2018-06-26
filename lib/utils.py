@@ -189,7 +189,8 @@ class Utils:
                 'collection_failed_links': MC[db][config['coll']['failed_links']],
                 'collection_pagination': MC[db][config['coll']['pagination']],
                 'collection_ilde_brands': MC[db][config['coll']['ilde_brands']],
-                'collection_log': MC[db][config['coll']['log']]
+                'collection_log': MC[db][config['coll']['log']],
+                'users': MC[db][config['coll']['users']]
             }
         else:
             return {
@@ -214,5 +215,6 @@ class Utils:
                 'collection_failed_links': MC[db][dbprefix['daily']+"_"+config['coll']['failed_links']],
                 'collection_pagination': MC[db][dbprefix['daily']+"_"+config['coll']['pagination']],
                 'collection_ilde_brands': MC[db][dbprefix['daily']+"_"+config['coll']['ilde_brands']],
-                'collection_log': MC[db][config['coll']['log']]
+                'collection_log': MC[db][config['coll']['log']],
+                'users': MC[db][config['coll']['users']]
             }

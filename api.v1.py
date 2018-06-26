@@ -6,8 +6,6 @@ import csv
 import jwt
 import json
 import pipes
-import urllib.request, urllib.parse, urllib.error
-import urllib.request, urllib.error, urllib.parse
 import subprocess
 import configparser
 from flask import jsonify
@@ -18,9 +16,13 @@ from bson.json_util import dumps
 from bson.objectid import ObjectId
 from flask_compress import Compress
 from flask_cors import CORS, cross_origin
+from werkzeug.security import safe_str_cmp
 from werkzeug.utils import secure_filename
 from pymongo import MongoClient, ReturnDocument
+import urllib.request, urllib.parse, urllib.error
+import urllib.request, urllib.error, urllib.parse
 from flask_debugtoolbar import DebugToolbarExtension
+#from flask_jwt import JWT, jwt_required, current_identity
 from flask import Flask, flash, render_template, request, redirect, g
 
 
@@ -1984,15 +1986,51 @@ def ft():
 
 
 
-@app.route('/v1/auth', methods=['POST', 'GET'])
+@app.route('/v1/auth', methods=['POST'])
 def auth():
 
     """
     Authenticate
     """
 
-    encoded = jwt.encode({'name': 'JohnDoe', 'status': 'stupid'}, 'mysecret', algorithm='HS256')
-    return dumps({'token': encoded.decode('utf-8')})
+    username, password = None, None
+
+    errors = {
+        'en': {
+            'EMPTY_LGN_OR_PWD': 'Empty login or password'
+        }
+    }
+
+    auth_status = True
+
+    req = request.get_json(force=True)
+
+    if 'username' in req:
+        username = req['username']
+    if 'password' in req:
+        password = req['password']
+
+    # Server side validate auth
+    if username is not None and password is not None:
+        auth_status = Filters.validate_auth(app.config['cpool'], username, password)
+
+    # Login or password empty
+    if username is None or password is None:
+        return dumps({'error': password, 'msg': errors['en']['EMPTY_LGN_OR_PWD']})
+
+    user = app.config['cpool']['users'].find({'login': username, "password": password})
+    if user:
+        auth_status = True
+    else:
+        auth_status = False
+
+    if auth_status is False:
+        return dumps({'error': True})
+
+    encoded = jwt.encode({'username': username, 'password': password}, 'mysecret', algorithm='HS256')
+    return dumps({'username': username, 'token': encoded.decode('utf-8')})
+
+
 
 if __name__ == "__main__":
     app.jinja_env.auto_reload = True
