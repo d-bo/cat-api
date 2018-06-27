@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import jwt
+
 class Filters:
 
 
@@ -117,10 +119,34 @@ class Filters:
 
 
     @staticmethod
-    def validate_auth(cpool, login, password):
+    def validate_auth(cpool, username, password):
 
         """
         Server side validate auth
         """
 
-        return False
+        errors = {
+            'en': {
+                'EMPTY_LGN_OR_PWD': 'Empty login or password'
+            }
+        }
+
+        # Login or password empty
+        if username is None or password is None:
+            return {'error': 'EMPTY_LGN_OR_PWD', 'msg': errors['en']['EMPTY_LGN_OR_PWD']}
+
+        # User exist ?
+        user = cpool['users'].find_one({'username': username, "password": password})
+        print("USER", user)
+
+        if user is not None:
+            token = jwt.encode(
+                {
+                    'username': user['username'],
+                    'password': user['password']
+                }, 'mysecret', algorithm='HS256')
+            status = {'username': user['username'], 'token': token.decode('utf-8')}
+        else:
+            status = {'error': 'Not found'}
+
+        return status

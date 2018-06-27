@@ -3,7 +3,6 @@
 import os
 import re
 import csv
-import jwt
 import json
 import pipes
 import subprocess
@@ -1993,14 +1992,6 @@ def auth():
     Authenticate
     """
 
-    username, password = None, None
-
-    errors = {
-        'en': {
-            'EMPTY_LGN_OR_PWD': 'Empty login or password'
-        }
-    }
-
     auth_status = True
 
     req = request.get_json(force=True)
@@ -2010,30 +2001,15 @@ def auth():
     if 'password' in req:
         password = req['password']
 
-    # Server side validate auth
-    if username is not None and password is not None:
-        auth_status = Filters.validate_auth(app.config['cpool'], username, password)
+    status = Filters.validate_auth(cpool, username, password)
 
-    # Login or password empty
-    if username is None or password is None:
-        return dumps({'error': password, 'msg': errors['en']['EMPTY_LGN_OR_PWD']})
-
-    user = app.config['cpool']['users'].find({'login': username, "password": password})
-    if user:
-        auth_status = True
-    else:
-        auth_status = False
-
-    if auth_status is False:
-        return dumps({'error': True})
-
-    encoded = jwt.encode({'username': username, 'password': password}, 'mysecret', algorithm='HS256')
-    return dumps({'username': username, 'token': encoded.decode('utf-8')})
+    return dumps(status)
+    #return dumps({'username': username, 'token': encoded.decode('utf-8')})
 
 
 
 if __name__ == "__main__":
     app.jinja_env.auto_reload = True
     app.config['TEMPLATES_AUTO_RELOAD'] = True
-    port = int(os.environ.get('PORT', 5000))
+    port = int(os.environ.get('PORT', 5000)) # Heroku check port
     app.run(host='0.0.0.0', threaded=True, debug=True, port=port)

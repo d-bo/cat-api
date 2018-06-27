@@ -164,7 +164,13 @@ class Utils:
         else:
             db = config['mongodb']['workdb']
 
-        MC = MongoClient(config['mongodb']['conn'])
+        if 'MONGO_CLOUD' in os.environ:
+            conn_string = os.environ['MONGO_CLOUD']
+        else:
+            conn_string = config['mongodb']['conn']
+
+        MC = MongoClient(conn_string)
+        print("MONGO", MC)
 
         if dbprefix is None:
             return {
